@@ -82,13 +82,13 @@ class ModMailformHelper
 	
 	function getSendScript() {
 		$javascript = 'function mod_mailform_sendMail() {';
-		$javascript .= 'jQuery.ajax({type: "POST", url: "' . JFactory::getURI(). 'modules/' . $this->module->module . '/sendformajx.php", data:somedata,';
+		$javascript .= 'jQuery.ajax({type: "POST", url: "' . JFactory::getURI(). 'modules/' . $this->module->module . '/sendformajx.php", data:"",';
 		$javascript .= 'dataType:"text", timeout:30000, async:false,';
 		$javascript .= 'error: function(xhr) {';
 		$javascript .= 'console.log(\'Ошибка!\'+xhr.status+\' \'+xhr.statusText);';
 		$javascript .= '},';
 		$javascript .= 'success: function(a) {';
-		$javascript .= 'document.getElementById("my-content").innerHTML=a;';
+		$javascript .= 'jQuery("div.modal-body").html("<p>" + a + "</p>");';
 		$javascript .= '}';
 		$javascript .= '});';
 		$javascript .= '};';
