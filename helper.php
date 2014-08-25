@@ -81,10 +81,16 @@ class ModMailformHelper
 	}
 	
 	function getSendScript() {
-		$javascript = 'function mod_mailform_sendMail(form_data) {';
-		$javascript .= 'data = jQuery("#forms").serialize()';
-		$javascript .= 'jQuery.ajax({type: "POST", url: "' . JFactory::getURI(). 'modules/' . $this->module->module . '/sendformajx.php", data:form_data,';
-		$javascript .= 'dataType:"text", timeout:30000, async:false,';
+		$javascript = 'jQuery( document ).ready(function () {';
+		$javascript .= 'jQuery("#emailForm_' . $this->module->id . '").on( "submit", function() {';
+		$javascript .= 'form_data = jQuery("#emailForm_' . $this->module->id . '").serialize();';
+		$javascript .= 'jQuery.ajax({';
+		$javascript .= 'type: "POST",';
+		$javascript .= 'url: "' . JFactory::getURI(). 'modules/' . $this->module->module . '/sendformajx.php",';
+		$javascript .= 'data:form_data,';
+		$javascript .= 'dataType:"text",';
+		$javascript .= 'timeout:30000,';
+		$javascript .= 'async:false,';
 		$javascript .= 'error: function(xhr) {';
 		$javascript .= 'console.log(\'Ошибка!\'+xhr.status+\' \'+xhr.statusText);';
 		$javascript .= '},';
@@ -92,7 +98,8 @@ class ModMailformHelper
 		$javascript .= 'jQuery("div.modal-body").html("<p>" + a + "</p>");';
 		$javascript .= '}';
 		$javascript .= '});';
-		$javascript .= '};';
+		$javascript .= '});';
+		$javascript .= '});';
 		return $javascript;
 	}
 	

@@ -17,7 +17,7 @@ JHtml::_('behavior.formvalidation');
 $doc = JFactory::getDocument();
 $doc->addStyleSheet('modules/mod_mailform/tmpl/css/default.css');
 $doc->addScriptDeclaration($mopduleHelper->getSendScript());
-$doc->addScript('modules/mod_mailform/tmpl/js/sendmailform.js');
+// $doc->addScript('modules/mod_mailform/tmpl/js/sendmailform.js');
 // 
 ?>
 	<a href="#mod_mailform_<?php echo $module->id ?>" role="button" class="btn" data-toggle="modal">Click Me</a>
@@ -28,8 +28,7 @@ $doc->addScript('modules/mod_mailform/tmpl/js/sendmailform.js');
 			<h3><?php echo JText::_( 'COM_CONTACT_EMAIL_FORM' ); ?></h3>
 		</div>
 		<div class="modal-body">
-			<!-- <form action="<?php echo $_SERVER["REQUEST_URI"]; ?>" method="post" name="emailForm" id="emailForm" class="form-validate form-horizontal" onsubmit="mod_mailform_submite();return false;"> -->
-			<form action="javascript:void(null);" method="post" name="emailForm" id="emailForm" class="form-validate form-horizontal">
+			<form action="javascript:void(null);" method="post" name="emailForm_<?php echo $module->id ?>" id="emailForm_<?php echo $module->id ?>" class="form-validate form-horizontal">
 				<div id="write_us_div">
 					<fieldset id="write_us_fieldset">
 						<div class="control-group">
