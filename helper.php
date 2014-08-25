@@ -22,11 +22,41 @@ class ModMailformHelper {
 	const FORM_VALIDATION_ERROR = 3;
 	const SEND_MAIL_FAILED = 4;
 	
+	/**
+	 * Объект текущего модуля
+	 * @see ModMailformHelper::__construct()
+	 * @access private
+	 * @var stdClass
+	 */
 	private $module;
+	
+	/**
+	 * Параметры текущего модуля
+	 * @see ModMailformHelper::__construct()
+	 * @access private
+	 * @var Joomla\Registry\Registry
+	 */
+	private $params;
+	
+	/**
+	 * Сообщения с результатами обработки формы
+	 * @see ModMailformHelper::checkForm()
+	 * @access private
+	 * @var Array
+	 */
 	private $message;
 	
-	public function __construct($module) {
+	/**
+	 * Конструктор класса.
+	 *
+	 * @param   stdClass  $module  Объект текущего модуля
+	 * @param   Joomla\Registry\Registry  $params  Параметры текущего модуля
+	 *
+	 * @return  void
+	 */
+	public function __construct($module, $params) {
 		$this->module = $module;
+		$this->params = $params;
 	}
 	
 	/**
@@ -36,8 +66,6 @@ class ModMailformHelper {
 	 * @param   Mixed  $enquryText  The module options.
 	 *
 	 * @return  array
-	 *
-	 * @since   1.5
 	 */
 	public static function sendemail($post,$enquryText) {
 		$owner_email = 	$post->get('recipient',null,'string');
@@ -98,8 +126,9 @@ class ModMailformHelper {
 		$javascript .= 'error: function(xhr) {';
 		$javascript .= 'console.log(\'Ошибка!\'+xhr.status+\' \'+xhr.statusText);';
 		$javascript .= '},';
-		$javascript .= 'success: function(a) {';
-		$javascript .= 'jQuery("div.modal-body").html("<p>" + a + "</p>");';
+		$javascript .= 'success: function(msg) {';
+		$javascript .= 'alert("a = " + msg );';
+		$javascript .= 'jQuery("#mod_mailform_' . $this->module->id . ' div.modal-body").html("<p>" + msg + "</p>");';
 		$javascript .= '}';
 		$javascript .= '});';
 		$javascript .= '});';
@@ -108,6 +137,33 @@ class ModMailformHelper {
 	}
 	
 	public function checkForm() {
-		return self::DISPLAY_EMPTY_FORM;
+		$post = JFactory::getApplication()->input->post;
+		$cufaction = $post->get ( 'cufaction', null );
+		
+		if ( !$cufaction == 'sendmail' ) {
+			// Если не было сабмита - отобразим пустую форму
+			
+			// If captcha enabled, call the plugin and create a dispatcher (based on Joomla version)
+			if ( $this->params->get( 'captcha' ) ) {
+				JPluginHelper::importPlugin ( 'captcha' );
+				
+				$jv = ( int ) substr ( JVERSION, 0, 1 );
+				switch ($jv) {
+					case 2 :
+						$dispatcher = JDispatcher::getInstance ();
+						break;
+					case 3 :
+						$dispatcher = JEventDispatcher::getInstance ();
+						break;
+				}
+			}
+			
+			return self::DISPLAY_EMPTY_FORM;
+		} else {
+			// Сообщим об успешной отправке почты
+			$captcha_is_valid = true;
+			
+			return self::SEND_MAIL_OK;
+		}
 	}
 }

@@ -18,7 +18,7 @@ $jv = (int) substr(JVERSION,0,1);
 $req_subject = ( $params->get('req_subject','1') ) ? 'required' : '' ;
 $req_name 	 = ( $params->get('req_name','1')    ) ? 'required' : '' ;
 $emailLanguage 	 = $params->get('email_language')  ;
-$mopduleHelper = new ModMailformHelper($module);
+$mopduleHelper = new ModMailformHelper($module, $params);
 
 // If captcha enabled, call the plugin and create a dispatcher (based on Joomla version)
 if ( $params->get('captcha') ) {
@@ -53,6 +53,15 @@ $display = $mopduleHelper->checkForm();
 switch ($display) {
 	case ModMailformHelper::DISPLAY_EMPTY_FORM:
 		require JModuleHelper::getLayoutPath('mod_mailform', $params->get('layout', 'default'));
+		break;
+	case ModMailformHelper::SEND_MAIL_OK:
+		var_dump($display);
+		break;
+	case ModMailformHelper::FORM_VALIDATION_ERROR:
+		echo 'FORM_VALIDATION_ERROR';
+		break;
+	case ModMailformHelper::SEND_MAIL_FAILED:
+		echo 'SEND_MAIL_FAILED';
 		break;
 }
 
