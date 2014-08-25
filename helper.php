@@ -81,8 +81,9 @@ class ModMailformHelper
 	}
 	
 	function getSendScript() {
-		$javascript = 'function mod_mailform_sendMail() {';
-		$javascript .= 'jQuery.ajax({type: "POST", url: "' . JFactory::getURI(). 'modules/' . $this->module->module . '/sendformajx.php", data:"",';
+		$javascript = 'function mod_mailform_sendMail(form_data) {';
+		$javascript .= 'data = jQuery("#forms").serialize()';
+		$javascript .= 'jQuery.ajax({type: "POST", url: "' . JFactory::getURI(). 'modules/' . $this->module->module . '/sendformajx.php", data:form_data,';
 		$javascript .= 'dataType:"text", timeout:30000, async:false,';
 		$javascript .= 'error: function(xhr) {';
 		$javascript .= 'console.log(\'Ошибка!\'+xhr.status+\' \'+xhr.statusText);';
@@ -93,5 +94,9 @@ class ModMailformHelper
 		$javascript .= '});';
 		$javascript .= '};';
 		return $javascript;
+	}
+	
+	public function checkForm() {
+		
 	}
 }

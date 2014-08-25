@@ -29,7 +29,7 @@ $doc->addScript('modules/mod_mailform/tmpl/js/sendmailform.js');
 		</div>
 		<div class="modal-body">
 			<!-- <form action="<?php echo $_SERVER["REQUEST_URI"]; ?>" method="post" name="emailForm" id="emailForm" class="form-validate form-horizontal" onsubmit="mod_mailform_submite();return false;"> -->
-			<form action="" method="post" name="emailForm" id="emailForm" class="form-validate form-horizontal" onsubmit="return false;">
+			<form action="javascript:void(null);" method="post" name="emailForm" id="emailForm" class="form-validate form-horizontal">
 				<div id="write_us_div">
 					<fieldset id="write_us_fieldset">
 						<div class="control-group">
