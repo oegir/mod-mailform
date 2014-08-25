@@ -7,5 +7,5 @@ require_once(JPATH_BASE.DS.'includes'.DS.'defines.php');
 require_once(JPATH_BASE.DS.'includes'.DS.'framework.php');
 // Инициализируем Joomla
 JFactory::getApplication('site')->initialise();
-
-echo '123';
+// Запускаем модуль
+JModuleHelper::renderModule( JModuleHelper::getModule('mod_mailform') );
