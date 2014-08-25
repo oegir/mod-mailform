@@ -16,10 +16,14 @@ defined('_JEXEC') or die;
  * @subpackage  mod_mailform
  * @since       3.x
  */
-class ModMailformHelper
-{
+class ModMailformHelper {
+	const DISPLAY_EMPTY_FORM = 1;
+	const SEND_MAIL_OK = 2;
+	const FORM_VALIDATION_ERROR = 3;
+	const SEND_MAIL_FAILED = 4;
 	
 	private $module;
+	private $message;
 	
 	public function __construct($module) {
 		$this->module = $module;
@@ -104,6 +108,6 @@ class ModMailformHelper
 	}
 	
 	public function checkForm() {
-		
+		return self::DISPLAY_EMPTY_FORM;
 	}
 }

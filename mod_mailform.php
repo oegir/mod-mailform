@@ -48,14 +48,22 @@ $lang->load('plg_captcha_recaptcha', JPATH_ADMINISTRATOR , $siteLanguage   , tru
 $post = JFactory::getApplication()->input->post;
 $cufaction = $post->get('cufaction',null);
 
-// Check if there are data coming from the submitted form...
-if ($cufaction=="sendmail") {
-	// Captcha is enabled in the parameters? If so check in the post data if it is valid
-	if ( $params->get('captcha') ) {
-		$res = $dispatcher->trigger('onCheckAnswer',$post->get('recaptcha_response_field') );
-		$captcha_is_valid = ($res[0]) ? true : false ;
-	}	
-} else {
-	// ...otherwise it shows the form
-	require JModuleHelper::getLayoutPath('mod_mailform', $params->get('layout', 'default'));
+$display = $mopduleHelper->checkForm();
+
+switch ($display) {
+	case ModMailformHelper::DISPLAY_EMPTY_FORM:
+		require JModuleHelper::getLayoutPath('mod_mailform', $params->get('layout', 'default'));
+		break;
 }
+
+// // Check if there are data coming from the submitted form...
+// if ($cufaction=="sendmail") {
+// 	// Captcha is enabled in the parameters? If so check in the post data if it is valid
+// 	if ( $params->get('captcha') ) {
+// 		$res = $dispatcher->trigger('onCheckAnswer', array( $post->get('recaptcha_response_field') ) );
+// 		$captcha_is_valid = ( (bool)$res[0] ) ? true : false ;
+// 	}	
+// } else {
+// 	// ...otherwise it shows the form
+// 	require JModuleHelper::getLayoutPath('mod_mailform', $params->get('layout', 'default'));
+// }
