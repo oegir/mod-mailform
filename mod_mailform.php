@@ -61,7 +61,7 @@ switch ($display) {
 		echo 'FORM_VALIDATION_ERROR';
 		break;
 	case ModMailformHelper::SEND_MAIL_FAILED:
-		echo 'SEND_MAIL_FAILED';
+		require JModuleHelper::getLayoutPath('mod_mailform', $params->get('layout', 'default').'_sendfailed');
 		break;
 }
 
