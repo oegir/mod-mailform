@@ -127,7 +127,6 @@ class ModMailformHelper {
 		$javascript .= 'console.log(\'Ошибка!\'+xhr.status+\' \'+xhr.statusText);';
 		$javascript .= '},';
 		$javascript .= 'success: function(msg) {';
-		$javascript .= 'alert("a = " + msg );';
 		$javascript .= 'jQuery("#mod_mailform_' . $this->module->id . ' div.modal-body").html("<p>" + msg + "</p>");';
 		$javascript .= '}';
 		$javascript .= '});';

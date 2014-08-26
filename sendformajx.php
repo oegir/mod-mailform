@@ -8,4 +8,4 @@ require_once(JPATH_BASE.DS.'includes'.DS.'framework.php');
 // Инициализируем Joomla
 JFactory::getApplication('site')->initialise();
 // Запускаем модуль
-JModuleHelper::renderModule( JModuleHelper::getModule('mod_mailform') );
+echo JModuleHelper::renderModule( JModuleHelper::getModule('mod_mailform') );
