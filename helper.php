@@ -47,27 +47,30 @@ class ModMailformHelper {
 	private $message;
 	
 	/**
-	 * Конструктор класса.
+	 * Проверяет правильность заполнения полей формы. Возвращает False если неправильно
 	 *
-	 * @param   stdClass  $module  Объект текущего модуля
-	 * @param   Joomla\Registry\Registry  $params  Параметры текущего модуля
-	 *
-	 * @return  void
+	 * @return boolean
 	 */
-	public function __construct($module, $params) {
-		$this->module = $module;
-		$this->params = $params;
+	private function testFormFields() {
+		$captcha_is_valid = true;
+		
+		return true;
 	}
 	
 	/**
-	 * Sends a mail to recipient.
+	 * Отправляет письмо адресату. Возвращает False в случае неудачи
 	 *
 	 * @param   Mixed  $post  The module options.
 	 * @param   Mixed  $enquryText  The module options.
 	 *
-	 * @return  array
+	 * @return  boolean
 	 */
-	public static function sendemail($post,$enquryText) {
+	private function sendemail() {
+		return true;
+		
+		$post = Null;
+		$enquryText = Null;
+		
 		$owner_email = 	$post->get('recipient',null,'string');
 		$sender = 		$post->get('email',null,'string');
 		$name = 		$post->get('name',null,'string');
@@ -112,6 +115,24 @@ class ModMailformHelper {
 		$mailer = null;
 	}
 	
+	/**
+	 * Конструктор класса.
+	 *
+	 * @param   stdClass  $module  Объект текущего модуля
+	 * @param   Joomla\Registry\Registry  $params  Параметры текущего модуля
+	 *
+	 * @return  void
+	 */
+	public function __construct($module, $params) {
+		$this->module = $module;
+		$this->params = $params;
+	}
+	
+	/**
+	 * Возвращает jQuery-скрипт для Ajax-отправки формы
+	 *
+	 * @return  string
+	 */
 	function getSendScript() {
 		$javascript = 'jQuery( document ).ready(function () {';
 		$javascript .= 'jQuery("#emailForm_' . $this->module->id . '").on( "submit", function() {';
@@ -135,6 +156,11 @@ class ModMailformHelper {
 		return $javascript;
 	}
 	
+	/**
+	 * Выбирает режим отображения модуля
+	 *
+	 * @return  integer
+	 */
 	public function checkForm() {
 		$post = JFactory::getApplication()->input->post;
 		$cufaction = $post->get ( 'cufaction', null );
@@ -159,10 +185,18 @@ class ModMailformHelper {
 			
 			return self::DISPLAY_EMPTY_FORM;
 		} else {
-			// Сообщим об успешной отправке почты
-			$captcha_is_valid = true;
+			// Выберем режим отображения модуля
 			
-			return self::SEND_MAIL_OK;
+			if ( $this->testFormFields() ) {
+				
+				if ( $this->sendemail() ) {
+					return self::SEND_MAIL_OK;
+				} else {
+					return self::SEND_MAIL_FAILED;
+				}
+			} else {
+				return self::FORM_VALIDATION_ERROR;
+			}
 		}
 	}
 }
