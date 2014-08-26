@@ -55,7 +55,7 @@ switch ($display) {
 		require JModuleHelper::getLayoutPath('mod_mailform', $params->get('layout', 'default'));
 		break;
 	case ModMailformHelper::SEND_MAIL_OK:
-		var_dump($display);
+		require JModuleHelper::getLayoutPath('mod_mailform', $params->get('layout', 'default').'_sendok');
 		break;
 	case ModMailformHelper::FORM_VALIDATION_ERROR:
 		echo 'FORM_VALIDATION_ERROR';
