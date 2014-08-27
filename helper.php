@@ -115,6 +115,16 @@ class ModMailformHelper {
 	);
 	
 	/**
+	 * Загружает данные формы
+	 */
+	private function getFormData() {
+	
+		foreach ($this->form_fields as $field_name => &$field_data) {
+			$field_data['value'] = $this->post->get( $field_name, $field_data['default_value'], $field_data['filter'] );
+		}
+	}
+	
+	/**
 	 * Проверяет правильность заполнения полей формы. Возвращает False если неправильно
 	 *
 	 * @return boolean
@@ -203,11 +213,33 @@ class ModMailformHelper {
 	}
 	
 	/**
+	 * Устанавливает обязательные для заполнения поля
+	 * 
+	 * @param   array  $required массив со списком имен обязательных полей
+	 *
+	 * @return  void
+	 */
+	public function setRequiredFields($required) {
+		
+	}
+	
+	/**
+	 * Возвращает имя класса, если поле обязательное или пустую строку
+	 *
+	 * @param   array  $required массив со списком имен обязательных полей
+	 *
+	 * @return  void
+	 */
+	public function getRequiredClass($name) {
+		
+	}
+	
+	/**
 	 * Возвращает jQuery-скрипт для Ajax-отправки формы
 	 *
 	 * @return  string
 	 */
-	function getSendScript() {
+	public function getSendScript() {
 		$javascript = 'jQuery( document ).ready(function () {';
 		$javascript .= 'jQuery("#emailForm_' . $this->module->id . '").on( "submit", function() {';
 		$javascript .= 'form_data = jQuery("#emailForm_' . $this->module->id . '").serialize();';
@@ -228,16 +260,6 @@ class ModMailformHelper {
 		$javascript .= '});';
 		$javascript .= '});';
 		return $javascript;
-	}
-	
-	/**
-	 * Загружает данные формы
-	 */
-	public function getFormData() {
-		
-		foreach ($this->form_fields as $field_name => &$field_data) {
-			$field_data['value'] = $this->post->get( $field_name, $field_data['default_value'], $field_data['filter'] );
-		}
 	}
 	
 	/**
