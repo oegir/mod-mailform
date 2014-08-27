@@ -47,14 +47,42 @@ class ModMailformHelper {
 	private $message;
 	
 	/**
+	 * Объект с post-данными запроса
+	 * @see ModMailformHelper::__construct()
+	 * @access private
+	 * @var JInput
+	 */
+	private $post;
+	
+	/**
+	 * Массив с данными формы
+	 * @see ModMailformHelper::getFormData()
+	 * @access private
+	 * @var Array
+	 */
+	private $form_fields_values = array(
+		'name' => array('type' => 'text', 'required' => true, 'value' => ''),
+		'email' => array('type' => 'email', 'required' => true, 'value' => ''),
+		'subject' => array('type' => 'text', 'required' => false, 'value' => ''),
+		'text' => array('type' => 'text', 'required' => true, 'value' => ''),
+		'email_copy' => array('type' => 'bool', 'required' => false, 'value' => ''),
+		'recaptcha_response_field' => array('type' => 'text', 'required' => false, 'value' => ''),
+	);
+	
+	/**
 	 * Проверяет правильность заполнения полей формы. Возвращает False если неправильно
 	 *
 	 * @return boolean
 	 */
 	private function testFormFields() {
-		$captcha_is_valid = true;
+		$form_ok = false;
+		$captcha_is_valid = false;
 		
-		return true;
+// 		htmlspecialchars($string)
+		
+		$form_ok &= $captcha_is_valid;
+		
+		return $form_ok;
 	}
 	
 	/**
@@ -126,6 +154,7 @@ class ModMailformHelper {
 	public function __construct($module, $params) {
 		$this->module = $module;
 		$this->params = $params;
+		$this->post = JFactory::getApplication()->input->post;
 	}
 	
 	/**
@@ -161,9 +190,17 @@ class ModMailformHelper {
 	 *
 	 * @return  integer
 	 */
+	public function getFormData() {
+		
+	}
+	
+	/**
+	 * Выбирает режим отображения модуля
+	 *
+	 * @return  integer
+	 */
 	public function checkForm() {
-		$post = JFactory::getApplication()->input->post;
-		$cufaction = $post->get ( 'cufaction', null );
+		$cufaction = $this->post->get ( 'cufaction', null );
 		
 		if ( !$cufaction == 'sendmail' ) {
 			// Если не было сабмита - отобразим пустую форму

@@ -78,7 +78,6 @@ $doc->addScriptDeclaration($mopduleHelper->getSendScript());
 						<button class="btn btn-primary validate" type="submit"><i class="icon-envelope"></i> <?php echo JText::_('COM_CONTACT_CONTACT_SEND'); ?></button>
 					</fieldset>
 				</div>
-				<input type="hidden" name="recipient" value="<?php echo $module->id; ?>" />
 				<input type="hidden" name="cufaction" value="sendmail" />
 				<?php echo JHTML::_( 'form.token' ); ?>
 			</form>
