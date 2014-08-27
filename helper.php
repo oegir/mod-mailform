@@ -141,6 +141,22 @@ class ModMailformHelper {
 	}
 	
 	/**
+	 * Устанавливает признак обязательных полей на основе параметров модуля
+	 *
+	 * @return void
+	 */
+	private function readRequiredFiedsFromParams() {
+		
+		foreach ($this->form_fields as $field_name => &$field_data) {
+			$param = $this->params->get( 'req_' . $field_name, Null );
+			
+			if ( isset( $param ) ) {
+				$field_data['required'] = (bool) $param;
+			}
+		}
+	}
+	
+	/**
 	 * Отправляет письмо адресату. Возвращает False в случае неудачи
 	 *
 	 * @param   Mixed  $post  The module options.
@@ -210,6 +226,7 @@ class ModMailformHelper {
 		$this->module = $module;
 		$this->params = $params;
 		$this->post = JFactory::getApplication()->input->post;
+		$this->readRequiredFiedsFromParams();
 	}
 	
 	/**
@@ -238,10 +255,11 @@ class ModMailformHelper {
 	 *
 	 * @param   array  $required массив со списком имен обязательных полей
 	 *
-	 * @return  void
+	 * @return  string
 	 */
 	public function getRequiredClass($name) {
-		
+		$result = $this->form_fields[$name]['required'] ? 'required' : '' ;
+		return $result;
 	}
 	
 	/**
@@ -300,7 +318,7 @@ class ModMailformHelper {
 			
 			return self::DISPLAY_EMPTY_FORM;
 		} else {
-			// Выберем режим отображения модуля
+			// Подготовим данные формы для проверки
 			$this->getFormData();
 			
 			if ( $this->testFormFields() ) {

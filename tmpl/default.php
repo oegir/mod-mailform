@@ -17,8 +17,6 @@ JHtml::_('behavior.formvalidation');
 $doc = JFactory::getDocument();
 $doc->addStyleSheet('modules/mod_mailform/tmpl/css/default.css');
 $doc->addScriptDeclaration($moduleHelper->getSendScript());
-// $doc->addScript('modules/mod_mailform/tmpl/js/sendmailform.js');
-$moduleHelper->setRequiredFields( array( 'bla-bla' ) );
 ?>
 	<a href="#mod_mailform_<?php echo $module->id ?>" role="button" class="btn" data-toggle="modal">Click Me</a>
 	<!-- <div class="modal hide fade" id="mod_mailform_<?php echo $module->id ?>" > -->
@@ -33,32 +31,32 @@ $moduleHelper->setRequiredFields( array( 'bla-bla' ) );
 					<fieldset id="write_us_fieldset">
 						<div class="control-group">
 							<div class="control-label">
-								<label for="contact_name" class="<?php echo $req_name; ?>">&nbsp;<?php echo JText::_( 'COM_CONTACT_CONTACT_EMAIL_NAME_LABEL' ); ?>:</label>
+								<label for="contact_name">&nbsp;<?php echo JText::_( 'COM_CONTACT_CONTACT_EMAIL_NAME_LABEL' ); ?>:</label>
 							</div>
 							<div class="controls">
-								<input type="text" name="name" id="contact_name" size="30" class="inputbox input-xlarge" aria-required="<?php if ($req_name == 'required') echo 'true'; else echo 'false'  ?>" <?php echo $req_name; ?> value="" />
+								<input type="text" name="name" id="contact_name" size="30" class="inputbox input-xlarge <?php echo $moduleHelper->getRequiredClass('name'); ?>" value="" />
 							</div>
 						</div>
 						<div class="control-group">
 							<div class="control-label">
-								<label id="contact_emailmsg" for="contact_email" class="required">&nbsp;<?php echo JText::_( 'JGLOBAL_EMAIL' ); ?>:</label>
+								<label id="contact_emailmsg" for="contact_email">&nbsp;<?php echo JText::_( 'JGLOBAL_EMAIL' ); ?>:</label>
 							</div>
 							<div class="controls">
-								<input type="text" id="contact_email" name="email" size="30" value="" class="inputbox required validate-email input-xlarge" maxlength="100" />
+								<input type="text" id="contact_email" name="email" size="30" value="" class="inputbox <?php echo $moduleHelper->getRequiredClass('email'); ?> validate-email input-xlarge" maxlength="100" />
 							</div>
 						</div>
 						<div class="control-group">
 							<div class="control-label">
-								<label for="contact_subject">&nbsp;<?php echo JText::_( 'COM_CONTACT_CONTACT_MESSAGE_SUBJECT_LABEL' ); ?>:</label>
+								<label for="contact_subject" >&nbsp;<?php echo JText::_( 'COM_CONTACT_CONTACT_MESSAGE_SUBJECT_LABEL' ); ?>:</label>
 							</div>
 							<div class="controls">
-								<input type="text" name="subject" id="contact_subject" size="30" class="inputbox input-xlarge <?php echo $req_subject; ?>" value="" />
+								<input type="text" name="subject" id="contact_subject" size="30" class="inputbox input-xlarge <?php echo $moduleHelper->getRequiredClass('subject'); ?>" value="" />
 							</div>
 						</div>
 						<div class="control-group">
 							<label id="contact_textmsg" class="control-label" for="contact_text">&nbsp;<?php echo JText::_( 'COM_CONTACT_CONTACT_ENTER_MESSAGE_LABEL' ); ?>:</label>
 							<div class="controls">
-								<textarea cols="50" rows="10" name="text" id="contact_text" class="inputbox input-xlarge required"></textarea>
+								<textarea cols="50" rows="10" name="text" id="contact_text" class="inputbox input-xlarge <?php echo $moduleHelper->getRequiredClass('text'); ?>"></textarea>
 							</div>
 						</div>
 		<?php if ($params->get('captcha')) {
