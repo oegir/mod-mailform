@@ -55,18 +55,63 @@ class ModMailformHelper {
 	private $post;
 	
 	/**
-	 * Массив с данными формы
+	 * Массив с данными формы. Поля массива: 
+	 * 	- Имя поля
+	 * 		- type - тип поля для проверки правильности заполнения,
+	 *							@see ModMailformHelper::testFormFields()
+	 * 		- filter - фильтер для получения поля,
+	 *								@see JFilterInput::clean()
+	 * 		- required - признак обязательности заполнения поля,
+	 * 		- value - значение поля, загружаемое из формы
+	 * 		- default_value - значение по-умолчанию, до загрузки формы
+	 * 
 	 * @see ModMailformHelper::getFormData()
 	 * @access private
 	 * @var Array
 	 */
-	private $form_fields_values = array(
-		'name' => array('type' => 'text', 'required' => true, 'value' => ''),
-		'email' => array('type' => 'email', 'required' => true, 'value' => ''),
-		'subject' => array('type' => 'text', 'required' => false, 'value' => ''),
-		'text' => array('type' => 'text', 'required' => true, 'value' => ''),
-		'email_copy' => array('type' => 'bool', 'required' => false, 'value' => ''),
-		'recaptcha_response_field' => array('type' => 'text', 'required' => false, 'value' => ''),
+	private $form_fields = array(
+		'name' => array(
+				'type' => 'text',
+				'filter' => 'string',
+				'required' => true,
+				'value' => Null,
+				'default_value' => ''
+		),
+		'email' => array(
+				'type' => 'email',
+				'filter' => 'string',
+				'required' => true,
+				'value' => Null,
+				'default_value' => ''
+		),
+		'subject' => array(
+				'type' => 'text',
+				'filter' => 'string', 
+				'required' => false,
+				'value' => Null,
+				'default_value' => ''
+		),
+		'text' => array(
+				'type' => 'text',
+				'filter' => 'string',
+				'required' => true,
+				'value' => Null,
+				'default_value' => ''
+		),
+		'email_copy' => array(
+				'type' => 'bool',
+				'filter' => 'bool',
+				'required' => false,
+				'value' => Null,
+				'default_value' => false
+		),
+		'recaptcha_response_field' => array(
+				'type' => 'text',
+				'filter' => 'string',
+				'required' => false,
+				'value' => Null,
+				'default_value' => ''
+		),
 	);
 	
 	/**
@@ -186,12 +231,13 @@ class ModMailformHelper {
 	}
 	
 	/**
-	 * Выбирает режим отображения модуля
-	 *
-	 * @return  integer
+	 * Загружает данные формы
 	 */
 	public function getFormData() {
 		
+		foreach ($this->form_fields as $field_name => &$field_data) {
+			$field_data['value'] = $this->post->get( $field_name, $field_data['default_value'], $field_data['filter'] );
+		}
 	}
 	
 	/**
@@ -223,6 +269,7 @@ class ModMailformHelper {
 			return self::DISPLAY_EMPTY_FORM;
 		} else {
 			// Выберем режим отображения модуля
+			$this->getFormData();
 			
 			if ( $this->testFormFields() ) {
 				
