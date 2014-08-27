@@ -16,9 +16,9 @@ JHtml::_('behavior.formvalidation');
 // Note. It is important to remove spaces between elements.
 $doc = JFactory::getDocument();
 $doc->addStyleSheet('modules/mod_mailform/tmpl/css/default.css');
-$doc->addScriptDeclaration($mopduleHelper->getSendScript());
+$doc->addScriptDeclaration($moduleHelper->getSendScript());
 // $doc->addScript('modules/mod_mailform/tmpl/js/sendmailform.js');
-// 
+$moduleHelper->setRequiredFields( array( 'bla-bla' ) );
 ?>
 	<a href="#mod_mailform_<?php echo $module->id ?>" role="button" class="btn" data-toggle="modal">Click Me</a>
 	<!-- <div class="modal hide fade" id="mod_mailform_<?php echo $module->id ?>" > -->

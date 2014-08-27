@@ -18,7 +18,7 @@ $jv = (int) substr(JVERSION,0,1);
 $req_subject = ( $params->get('req_subject','1') ) ? 'required' : '' ;
 $req_name 	 = ( $params->get('req_name','1')    ) ? 'required' : '' ;
 $emailLanguage 	 = $params->get('email_language')  ;
-$mopduleHelper = new ModMailformHelper($module, $params);
+$moduleHelper = new ModMailformHelper($module, $params);
 
 // If captcha enabled, call the plugin and create a dispatcher (based on Joomla version)
 if ( $params->get('captcha') ) {
@@ -48,7 +48,7 @@ $lang->load('plg_captcha_recaptcha', JPATH_ADMINISTRATOR , $siteLanguage   , tru
 $post = JFactory::getApplication()->input->post;
 $cufaction = $post->get('cufaction',null);
 
-$display = $mopduleHelper->checkForm();
+$display = $moduleHelper->checkForm();
 
 switch ($display) {
 	case ModMailformHelper::DISPLAY_EMPTY_FORM:

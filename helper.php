@@ -221,6 +221,16 @@ class ModMailformHelper {
 	 */
 	public function setRequiredFields($required) {
 		
+		foreach ($required as $field_name) {
+			$param = $this->params->get( 'req_' . $field_name, Null );
+			$param = !isset( $param );
+			
+			if ( $param || !isset( $this->form_fields[$field_name] ) ) {
+				throw new Exception(JText::_('MOD_MAILFORM_NOT_SUPPORT_FIELD_EXCEPTION') . ' ' . $field_name, $this->module->id);
+			} else {
+				$this->form_fields[$field_name]['required'] = true;
+			}
+		}
 	}
 	
 	/**
