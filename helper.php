@@ -130,11 +130,18 @@ class ModMailformHelper {
 	 * @return boolean
 	 */
 	private function testFormFields() {
-		$form_ok = false;
+		$form_ok = true;
 		$captcha_is_valid = false;
 		
-// 		htmlspecialchars($string)
-		
+		foreach ($this->form_fields as $field_name => &$field_data) {
+			
+			switch ($field_data['type']) {
+				case 'text':
+					$field_data['value'] = trim( htmlspecialchars( $field_data['value'] ) );
+					$form_ok &= strlen( $field_data['value'] ) > 0;
+					break;
+			}
+		}
 		$form_ok &= $captcha_is_valid;
 		
 		return $form_ok;
@@ -251,7 +258,7 @@ class ModMailformHelper {
 	}
 	
 	/**
-	 * Возвращает имя класса, если поле обязательное или пустую строку
+	 * Возвращает имя CSS-класса, если поле обязательное или пустую строку
 	 *
 	 * @param   array  $required массив со списком имен обязательных полей
 	 *
