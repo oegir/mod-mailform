@@ -136,9 +136,21 @@ class ModMailformHelper {
 		foreach ($this->form_fields as $field_name => &$field_data) {
 			
 			switch ($field_data['type']) {
+				
 				case 'text':
 					$field_data['value'] = trim( htmlspecialchars( $field_data['value'] ) );
-					$form_ok &= strlen( $field_data['value'] ) > 0;
+					$form_ok &= ( ( strlen( $field_data['value'] ) > 0 ) && $field_data['required'] ) || ( ! $field_data['required'] );
+					break;
+					
+				case 'email':
+					$field_data['value'] = trim( $field_data['value'] );
+					$pattern = '/^[0-9A-zА-Яа-яЁё\-_]+@[0-9A-zА-Яа-яЁё\-_]+\.[0-9A-zА-Яа-яЁё\-_]+$/u';
+					
+					if ($field_data['required']) {
+						$form_ok &= preg_match($pattern, $field_data['value']);
+					} else {
+						$form_ok &= strlen( $field_data['value'] ) > 0 ? preg_match($pattern, $field_data['value']) : true;
+					}
 					break;
 			}
 		}
