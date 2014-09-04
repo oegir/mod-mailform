@@ -106,7 +106,7 @@ class ModMailformHelper {
 				'default_value' => false
 		),
 		'recaptcha_response_field' => array(
-				'type' => 'text',
+				'type' => 'captcha',
 				'filter' => 'string',
 				'required' => false,
 				'value' => Null,
@@ -131,18 +131,19 @@ class ModMailformHelper {
 	 */
 	private function testFormFields() {
 		$form_ok = true;
-		$captcha_is_valid = false;
 		
 		foreach ($this->form_fields as $field_name => &$field_data) {
 			
 			switch ($field_data['type']) {
 				
 				case 'text':
+					// Удалим HTML-теги и проверим заполненность
 					$field_data['value'] = trim( htmlspecialchars( $field_data['value'] ) );
 					$form_ok &= ( ( strlen( $field_data['value'] ) > 0 ) && $field_data['required'] ) || ( ! $field_data['required'] );
 					break;
 					
 				case 'email':
+					// Проверим заполненность и соответсвие шаблону электронной почты
 					$field_data['value'] = trim( $field_data['value'] );
 					$pattern = '/^[0-9A-zА-Яа-яЁё\-_]+@[0-9A-zА-Яа-яЁё\-_]+\.[0-9A-zА-Яа-яЁё\-_]+$/u';
 					
@@ -152,9 +153,24 @@ class ModMailformHelper {
 						$form_ok &= strlen( $field_data['value'] ) > 0 ? preg_match($pattern, $field_data['value']) : true;
 					}
 					break;
+					
+				case 'captcha':
+					// Если используется каптча проверим ее с помощью плагина и диспетчера событий
+					if ( $this->params->get('captcha') ) {
+						JPluginHelper::importPlugin ( 'captcha' );
+						$dispatcher = $this->getDispatcher();
+						$res = $dispatcher->trigger('onCheckAnswer',$post->get('recaptcha_response_field') );
+						$captcha_is_valid = ($res[0]) ? true : false ;
+					} else {
+						$captcha_is_valid = true;
+					}
+					
+					$form_ok &= $captcha_is_valid;
+					
+					break;
 			}
 		}
-		$form_ok &= $captcha_is_valid;
+		
 		
 		return $form_ok;
 	}
@@ -310,6 +326,24 @@ class ModMailformHelper {
 	}
 	
 	/**
+	 * Возвращает библиотечный класс Joomla в зависимости от версии
+	 *
+	 * @return  JEventDispatcher
+	 */
+	public function getDispatcher() {
+		$jv = ( int ) substr ( JVERSION, 0, 1 );
+		
+		switch ($jv) {
+			case 2 :
+				return JDispatcher::getInstance ();
+				break;
+			case 3 :
+				return JEventDispatcher::getInstance ();
+				break;
+		}
+	}
+	
+	/**
 	 * Выбирает режим отображения модуля
 	 *
 	 * @return  integer
@@ -322,17 +356,7 @@ class ModMailformHelper {
 			
 			// If captcha enabled, call the plugin and create a dispatcher (based on Joomla version)
 			if ( $this->params->get( 'captcha' ) ) {
-				JPluginHelper::importPlugin ( 'captcha' );
 				
-				$jv = ( int ) substr ( JVERSION, 0, 1 );
-				switch ($jv) {
-					case 2 :
-						$dispatcher = JDispatcher::getInstance ();
-						break;
-					case 3 :
-						$dispatcher = JEventDispatcher::getInstance ();
-						break;
-				}
 			}
 			
 			return self::DISPLAY_EMPTY_FORM;
