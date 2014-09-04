@@ -164,9 +164,7 @@ class ModMailformHelper {
 					} else {
 						$captcha_is_valid = true;
 					}
-					
 					$form_ok &= $captcha_is_valid;
-					
 					break;
 			}
 		}
@@ -353,12 +351,6 @@ class ModMailformHelper {
 		
 		if ( !$cufaction == 'sendmail' ) {
 			// Если не было сабмита - отобразим пустую форму
-			
-			// If captcha enabled, call the plugin and create a dispatcher (based on Joomla version)
-			if ( $this->params->get( 'captcha' ) ) {
-				
-			}
-			
 			return self::DISPLAY_EMPTY_FORM;
 		} else {
 			// Подготовим данные формы для проверки
