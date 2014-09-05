@@ -60,6 +60,7 @@ $doc->addScriptDeclaration($moduleHelper->getSendScript());
 							</div>
 						</div>
 		<?php if ($params->get('captcha')) {
+			JPluginHelper::importPlugin ( 'captcha' );
 			$moduleHelper->getDispatcher()->trigger('onInit','CUF_CAPTCHA');
 			$captcha_html =  $moduleHelper->getDispatcher()->trigger('onDisplay', array('CUF_CAPTCHA','CUF_CAPTCHA',null) );
 			echo $captcha_html[0].'<br />';

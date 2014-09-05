@@ -157,10 +157,16 @@ class ModMailformHelper {
 				case 'captcha':
 					// Если используется каптча проверим ее с помощью плагина и диспетчера событий
 					if ( $this->params->get('captcha') ) {
-						JPluginHelper::importPlugin ( 'captcha' );
-						$dispatcher = $this->getDispatcher();
-						$res = $dispatcher->trigger('onCheckAnswer',$post->get('recaptcha_response_field') );
-						$captcha_is_valid = ($res[0]) ? true : false ;
+						$response = $this->post->get('recaptcha_response_field');
+						
+						if (strlen( $response ) > 0 ) {
+							JPluginHelper::importPlugin ( 'captcha' );
+							$dispatcher = $this->getDispatcher();
+							$res = $dispatcher->trigger('onCheckAnswer',  $response);
+							$captcha_is_valid = ($res[0]) ? true : false ;
+						} else {
+							$captcha_is_valid = false;
+						}
 					} else {
 						$captcha_is_valid = true;
 					}
@@ -301,7 +307,6 @@ class ModMailformHelper {
 	 * @return  string
 	 */
 	public function getSendScript() {
-		return false;
 		$javascript = 'jQuery( document ).ready(function () {';
 		$javascript .= 'jQuery("#emailForm_' . $this->module->id . '").on( "submit", function() {';
 		$javascript .= 'form_data = jQuery("#emailForm_' . $this->module->id . '").serialize();';
