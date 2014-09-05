@@ -60,8 +60,8 @@ $doc->addScriptDeclaration($moduleHelper->getSendScript());
 							</div>
 						</div>
 		<?php if ($params->get('captcha')) {
-			$helper->getDispatcher()->trigger('onInit','CUF_CAPTCHA');
-			$captcha_html =  $helper->getDispatcher()->trigger('onDisplay', array('CUF_CAPTCHA','CUF_CAPTCHA',null) );
+			$moduleHelper->getDispatcher()->trigger('onInit','CUF_CAPTCHA');
+			$captcha_html =  $moduleHelper->getDispatcher()->trigger('onDisplay', array('CUF_CAPTCHA','CUF_CAPTCHA',null) );
 			echo $captcha_html[0].'<br />';
 		} ?>
 						<div class="control-group">

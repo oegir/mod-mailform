@@ -301,6 +301,7 @@ class ModMailformHelper {
 	 * @return  string
 	 */
 	public function getSendScript() {
+		return false;
 		$javascript = 'jQuery( document ).ready(function () {';
 		$javascript .= 'jQuery("#emailForm_' . $this->module->id . '").on( "submit", function() {';
 		$javascript .= 'form_data = jQuery("#emailForm_' . $this->module->id . '").serialize();';
