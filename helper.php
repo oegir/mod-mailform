@@ -222,7 +222,8 @@ class ModMailformHelper {
 	 * @return string
 	 */
 	private function getAdditInfo() {
-		$this->additInfo['%title%'] = &JFactory::getURI()->getPath();
+		$this->additInfo['%title%'] = JFactory::getApplication()->getParams()->get('page_title', '');
+		$this->additInfo['%url%'] = isset( $_SERVER['HTTP_REFERER'] ) ? htmlspecialchars( $_SERVER['HTTP_REFERER'] ) : 'not present';
 		return $this->additInfo;
 	}
 	
@@ -232,7 +233,25 @@ class ModMailformHelper {
 	 * @return string
 	 */
 	private function getContent() {
-		return $this->module->content;
+		$searches = array();
+		$replacements = array();
+		// Соберем массивы поиска и подстановки из массива с полями
+		foreach ($this->form_fields as $field) {
+			
+			if ( isset( $field['placeholder'] ) ) {
+				$searches[] = $field['placeholder'];
+				$replacements[] = $field['value'];
+			}
+		}
+		// Добавим дополнительные плейсхолдеры и их значения в массивы поиска и подстановки
+		$add_info = $this->getAdditInfo();
+		foreach ($add_info as $search => $replace) {
+			$searches[] = $search;
+			$replacements[] = $replace;
+		}
+		
+		$content = str_replace( $searches, $replacements, $this->params->get( 'message', '' ) );
+		return $content;
 	}
 	
 	/**

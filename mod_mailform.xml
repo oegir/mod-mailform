@@ -10,8 +10,6 @@
 	<version>1.0.0</version>
 	<description><![CDATA[MOD_MAILFORM_XML_DESCRIPTION]]></description>
 	
-	<customContent />
-	
 	<!-- Update servers -->
 <!-- 	<updateservers> -->
 <!-- 		<server type="extension" priority="1" name="Horizontal Menu">http://www.powerhost.pw/projects/mod_mailform/mailform-upgrade.xml</server> -->
@@ -35,6 +33,15 @@
 	
 	<config>
 	  <fields name="params">
+	  <fieldset name="basic">
+	   <field
+	     name="message"
+	     label ="E-mail message template"
+	     type="editor" 
+	     filter="safehtml"
+	     default="123"
+	    />
+	  </fieldset>
 		<fieldset name="options">
 		   <field 
 				name="email_language" 
