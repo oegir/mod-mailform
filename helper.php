@@ -372,7 +372,7 @@ class ModMailformHelper {
 		$javascript .= 'form_data = jQuery("#emailForm_' . $this->module->id . '").serialize();';
 		$javascript .= 'jQuery.ajax({';
 		$javascript .= 'type: "POST",';
-		$javascript .= 'url: "' . JFactory::getURI(). 'modules/' . $this->module->module . '/sendformajx.php",';
+		$javascript .= 'url: "' . JFactory::getURI()->base(). 'modules/' . $this->module->module . '/sendformajx.php",';
 		$javascript .= 'data:form_data,';
 		$javascript .= 'dataType:"text",';
 		$javascript .= 'timeout:30000,';

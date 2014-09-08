@@ -78,6 +78,7 @@ $doc->addScriptDeclaration($moduleHelper->getSendScript());
 					</fieldset>
 				</div>
 				<input type="hidden" name="cufaction" value="sendmail" />
+				<input type="hidden" name="mtitle" value="<?php echo $module->title ?>" />
 				<?php echo JHTML::_( 'form.token' ); ?>
 			</form>
 		</div>

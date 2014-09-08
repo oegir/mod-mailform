@@ -12,9 +12,6 @@ defined('_JEXEC') or die;
 // Include the syndicate functions only once
 require_once __DIR__ . '/helper.php';
 
-$captcha_is_valid = true;
-$jv = (int) substr(JVERSION,0,1);
-
 $emailLanguage 	 = $params->get('email_language')  ;
 $moduleHelper = new ModMailformHelper($module, $params);
 
