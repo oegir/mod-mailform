@@ -64,6 +64,7 @@ class ModMailformHelper {
 	 * 		- required - признак обязательности заполнения поля,
 	 * 		- value - значение поля, загружаемое из формы
 	 * 		- default_value - значение по-умолчанию, до загрузки формы
+	 * 		- placeholder - символьная строка, на которая будет заменена в тектсте e-mail сообщения на содержимое поля формы
 	 * 
 	 * @see ModMailformHelper::getFormData()
 	 * @access private
@@ -75,35 +76,39 @@ class ModMailformHelper {
 				'filter' => 'string',
 				'required' => true,
 				'value' => Null,
-				'default_value' => ''
+				'default_value' => '',
+				'placeholder' => '%name%',
 		),
 		'email' => array(
 				'type' => 'email',
 				'filter' => 'string',
 				'required' => true,
 				'value' => Null,
-				'default_value' => ''
+				'default_value' => '',
+				'placeholder' => '%email%',
 		),
 		'subject' => array(
 				'type' => 'text',
 				'filter' => 'string', 
 				'required' => false,
 				'value' => Null,
-				'default_value' => ''
+				'default_value' => '',
+				'placeholder' => '%subject%',
 		),
 		'text' => array(
 				'type' => 'text',
 				'filter' => 'string',
 				'required' => true,
 				'value' => Null,
-				'default_value' => ''
+				'default_value' => '',
+				'placeholder' => '%message%',
 		),
 		'email_copy' => array(
 				'type' => 'bool',
 				'filter' => 'bool',
 				'required' => false,
 				'value' => Null,
-				'default_value' => false
+				'default_value' => false,
 		),
 		'recaptcha_response_field' => array(
 				'type' => 'captcha',
@@ -112,6 +117,22 @@ class ModMailformHelper {
 				'value' => Null,
 				'default_value' => ''
 		),
+	);
+	
+	/**
+	 * Массив дополнительных плейсхолдеров их значений для подстановки в текст e-mail-сообщения: 
+	 * - %title%,
+	 * 		- заголовок страницы,
+	 * - %url%,
+	 * 		- адрес страницы,
+	 * 
+	 * @see ModMailformHelper::getAdditInfo()
+	 * @access private
+	 * @var Array
+	 */
+	private $additInfo = array(
+			'%title%' => '',
+			'%url%' => '',
 	);
 	
 	/**
@@ -196,6 +217,25 @@ class ModMailformHelper {
 	}
 	
 	/**
+	 * Подготавливает текст отправляемого сообщения
+	 *
+	 * @return string
+	 */
+	private function getAdditInfo() {
+		$this->additInfo['%title%'] = &JFactory::getURI()->getPath();
+		return $this->additInfo;
+	}
+	
+	/**
+	 * Подготавливает текст отправляемого сообщения
+	 *
+	 * @return string
+	 */
+	private function getContent() {
+		return $this->module->content;
+	}
+	
+	/**
 	 * Отправляет письмо адресату. Возвращает False в случае неудачи
 	 *
 	 * @param   Mixed  $post  The module options.
@@ -204,6 +244,7 @@ class ModMailformHelper {
 	 * @return  boolean
 	 */
 	private function sendemail() {
+		echo $this->getContent();
 		return true;
 		
 		$post = Null;

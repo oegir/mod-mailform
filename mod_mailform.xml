@@ -10,6 +10,8 @@
 	<version>1.0.0</version>
 	<description><![CDATA[MOD_MAILFORM_XML_DESCRIPTION]]></description>
 	
+	<customContent />
+	
 	<!-- Update servers -->
 <!-- 	<updateservers> -->
 <!-- 		<server type="extension" priority="1" name="Horizontal Menu">http://www.powerhost.pw/projects/mod_mailform/mailform-upgrade.xml</server> -->
@@ -33,7 +35,7 @@
 	
 	<config>
 	  <fields name="params">
-		<fieldset name="basic">
+		<fieldset name="options">
 		   <field 
 				name="email_language" 
 				type="language" 
@@ -46,6 +48,7 @@
 				type="radio"
 				default="0" 
 				label="Show CAPTCHA"
+				class="btn-group btn-group-yesno"
 				description="Be sure to enable enable the captcha in the Global Configuration, enable the ReCaptcha plugin and set the keys!!!" 				
 			>
 				<option value="0">JHIDE</option>
@@ -55,7 +58,8 @@
 				name="req_subject" 
 				type="radio"
 				default="1" 
-				label="Subject required" 
+				label="Subject required"
+				class="btn-group btn-group-yesno" 
 			>
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
@@ -64,7 +68,8 @@
 				name="req_name" 
 				type="radio"
 				default="1" 
-				label="Name required" 
+				label="Name required"
+				class="btn-group btn-group-yesno" 
 			>
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
