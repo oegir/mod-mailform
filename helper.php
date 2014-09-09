@@ -21,6 +21,7 @@ class ModMailformHelper {
 	const SEND_MAIL_OK = 2;
 	const FORM_VALIDATION_ERROR = 3;
 	const SEND_MAIL_FAILED = 4;
+	const NO_VALUE = 5;
 	
 	/**
 	 * Объект текущего модуля
@@ -166,7 +167,7 @@ class ModMailformHelper {
 				case 'email':
 					// Проверим заполненность и соответсвие шаблону электронной почты
 					$field_data['value'] = trim( $field_data['value'] );
-					$pattern = '/^[0-9A-zА-Яа-яЁё\-_]+@[0-9A-zА-Яа-яЁё\-_]+\.[0-9A-zА-Яа-яЁё\-_]+$/u';
+					$pattern = '/^[0-9A-zА-Яа-яЁё\.\-_]+@[0-9A-zА-Яа-яЁё\-_]+\.[0-9A-zА-Яа-яЁё\-_]+$/u';
 					
 					if ($field_data['required']) {
 						$form_ok &= preg_match($pattern, $field_data['value']);
@@ -255,62 +256,115 @@ class ModMailformHelper {
 	}
 	
 	/**
-	 * Отправляет письмо адресату. Возвращает False в случае неудачи
-	 *
-	 * @param   Mixed  $post  The module options.
-	 * @param   Mixed  $enquryText  The module options.
+	 * Подготавливает данные для майлера и передает их для отправки. Возвращает False в случае неудачи
 	 *
 	 * @return  boolean
 	 */
 	private function sendemail() {
-		echo $this->getContent();
-		return true;
+		$result = true;
+		$mailer_data = array(
+				'to_mail',
+				'from_sender_data',
+				'subject',
+				'text',
+		);
+		$app		= JFactory::getApplication();
+		// Подготовим данные для отправки администрации сайта
+		$mailer_data['to_mail'] = $this->params->get( 'sending_mail', $app->getCfg( 'mailfrom' ) );
+		$mailer_data['from_sender_data'] = array(
+				$this->form_fields['email']['value'],
+				$this->form_fields['name']['value'],
+		);
+		$mailer_data['subject'] = $this->form_fields['subject']['value'];
+		$mailer_data['text'] = $this->getContent();
 		
-		$post = Null;
-		$enquryText = Null;
+		$result &= $this->doMailer( $mailer_data );
 		
-		$owner_email = 	$post->get('recipient',null,'string');
-		$sender = 		$post->get('email',null,'string');
-		$name = 		$post->get('name',null,'string');
-		$subject = 		$post->get('subject',null,'string');
-		$text = 		$post->get('text',null,'string');
-		$email_copy = 	$post->get('email_copy',false,'boolean');
-
-		$body =  		str_replace('%s',JURI::current(), JText::_( 'COM_CONTACT_ENQUIRY_TEXT'))."\n".$name."  <".$sender.">\n\n".$text;
-		$owner_email = 	str_replace( '#'  , '@' , $owner_email );
-		$owner_email = 	str_replace( '"'  , '' , $owner_email );
-		$recipient = explode(";",$owner_email);
-
-		if ($email_copy ) {
-			$app		= JFactory::getApplication();
-			$mailfrom	= $app->getCfg('mailfrom');
-			$fromname	= $app->getCfg('fromname');
-			$sitename	= $app->getCfg('sitename');
-				
-			$copytext		= JText::sprintf('COM_CONTACT_COPYTEXT_OF', $fromname, $sitename);
-			$copytext		.= "\r\n\r\n".$body;
-			$copysubject	= JText::sprintf('COM_CONTACT_COPYSUBJECT_OF', $subject);
-
-			$mail = JFactory::getMailer();
-			$mail->addRecipient($sender);
-			$mail->addReplyTo(array($sender, $name));
-			$mail->setSender(array($mailfrom, $fromname));
-			$mail->setSubject($copysubject);
-			$mail->setBody($copytext);
-			$sent = $mail->Send();
+		if ( $this->form_fields['email_copy']['value'] ) {
+			// Подготовим данные для отправки пользователю сайта
+			$sender_mail = $this->params->get( 'sender_mail', self::NO_VALUE );
+			
+			if ( $sender_mail == self::NO_VALUE ) {
+				$sender_mail = $this->params->get( 'sending_mail', $app->getCfg( 'mailfrom' ) );
+			}
+			
+			$mailer_data['to_mail'] = $this->form_fields['email']['value'];
+			$mailer_data['from_sender_data'] = array(
+					$sender_mail,
+					$this->params->get( 'sender_name', $app->getCfg( 'fromname' ) ),
+			);
+			
+			$result &= $this->doMailer( $mailer_data );
 		}
+		
+		return $result;
+		
+// 		$post = Null;
+// 		$enquryText = Null;
+		
+// 		$owner_email = 	$post->get('recipient',null,'string');
+// 		$sender = 		$post->get('email',null,'string');
+// 		$name = 		$post->get('name',null,'string');
+// 		$subject = 		$post->get('subject',null,'string');
+// 		$text = 		$post->get('text',null,'string');
+// 		$email_copy = 	$post->get('email_copy',false,'boolean');
 
-		$body =  str_replace('%s',JURI::current(), $enquryText)."\n\n".$name."  <".$sender.">\n\n".$text;
+// 		$body =  		str_replace('%s',JURI::current(), JText::_( 'COM_CONTACT_ENQUIRY_TEXT'))."\n".$name."  <".$sender.">\n\n".$text;
+// 		$owner_email = 	str_replace( '#'  , '@' , $owner_email );
+// 		$owner_email = 	str_replace( '"'  , '' , $owner_email );
+// 		$recipient = explode(";",$owner_email);
 
+// 		if ($email_copy ) {
+// 			$app		= JFactory::getApplication();
+// 			$mailfrom	= $app->getCfg('mailfrom');
+// 			$fromname	= $app->getCfg('fromname');
+// 			$sitename	= $app->getCfg('sitename');
+				
+// 			$copytext		= JText::sprintf('COM_CONTACT_COPYTEXT_OF', $fromname, $sitename);
+// 			$copytext		.= "\r\n\r\n".$body;
+// 			$copysubject	= JText::sprintf('COM_CONTACT_COPYSUBJECT_OF', $subject);
+
+// 			$mail = JFactory::getMailer();
+// 			$mail->addRecipient($sender);
+// 			$mail->addReplyTo(array($sender, $name));
+// 			$mail->setSender(array($mailfrom, $fromname));
+// 			$mail->setSubject($copysubject);
+// 			$mail->setBody($copytext);
+// 			$sent = $mail->Send();
+// 		}
+
+// 		$body =  str_replace('%s',JURI::current(), $enquryText)."\n\n".$name."  <".$sender.">\n\n".$text;
+
+// 		$mailer = JFactory::getMailer();
+// 		foreach ($recipient as $r) $mailer->addRecipient($r);
+// 		$mailer->setSender($sender);
+// 		$mailer->setSubject($subject);
+// 		$mailer->isHTML(false);
+// 		$mailer->setBody($body);
+// 		$send = $mailer->Send();
+
+// 		$mailer = null;
+	}
+	
+	/**
+	 * Производит отправку писем с помощью JMail. Возвращает False при ошибке.
+	 *
+	 * @param array $data Данные для отправки.
+	 *
+	 * @return boolean
+	 */
+	private function doMailer($data) {
 		$mailer = JFactory::getMailer();
-		foreach ($recipient as $r) $mailer->addRecipient($r);
-		$mailer->setSender($sender);
-		$mailer->setSubject($subject);
-		$mailer->isHTML(false);
-		$mailer->setBody($body);
+		
+		$mailer->addRecipient($data['to_mail']);
+		$mailer->setSender($data['from_sender_data']);
+		$mailer->setSubject($data['subject']);
+		$mailer->setBody($data['text']);
+		
 		$send = $mailer->Send();
-
 		$mailer = null;
+		
+		return !is_object($send);
 	}
 	
 	/**
