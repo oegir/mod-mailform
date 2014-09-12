@@ -39,6 +39,7 @@
 				<field name="message" label="MOD_MAILFORM_MESSAGE_TEMPLATE_LABEL"
 					description="MOD_MAILFORM_MESSAGE_TEMPLATE_DESC" type="editor"
 					filter="safehtml" default="MOD_MAILFORM_MESSAGE_TEMPLATE" />
+					<field type="spacer" name="ads" label="&lt;b&gt;Advanced parameters&lt;/b&gt;" />
 			</fieldset>
 			<fieldset name="options">
 				<field name="sender_mail" type="email" default="" validate="email"
