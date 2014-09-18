@@ -18,14 +18,14 @@ $doc = JFactory::getDocument();
 $doc->addStyleSheet('modules/mod_mailform/tmpl/css/default.css');
 $doc->addScriptDeclaration($moduleHelper->getSendScript());
 ?>
-	<a href="#mod_mailform_<?php echo $module->id ?>" role="button" class="btn" data-toggle="modal">Click Me</a>
+	<a href="#mod_mailform_<?php echo $module->id ?>" role="button" class="btn" data-toggle="modal" id="mod_mailform_btn_<?php echo $module->id ?>">Click Me</a>
 	<!-- <div class="modal hide fade" id="mod_mailform_<?php echo $module->id ?>" > -->
 	<div class="modal" id="mod_mailform_<?php echo $module->id ?>" >
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 			<h3><?php echo JText::_( 'COM_CONTACT_EMAIL_FORM' ); ?></h3>
 		</div>
-		<div class="modal-body">
+		<div class="modal-body" id="modal_body_<?php echo $module->id ?>">
 			<form action="javascript:void(null);" method="post" name="emailForm_<?php echo $module->id ?>" id="emailForm_<?php echo $module->id ?>" class="form-validate form-horizontal">
 				<div id="write_us_div">
 					<fieldset id="write_us_fieldset">

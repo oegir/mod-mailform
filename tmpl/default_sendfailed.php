@@ -8,4 +8,5 @@
  */
 
 defined('_JEXEC') or die;
+
 echo 'SEND_MAIL_FAILED';

@@ -36,7 +36,10 @@ switch ($display) {
 		require JModuleHelper::getLayoutPath('mod_mailform', $params->get('layout', 'default').'_sendok');
 		break;
 	case ModMailformHelper::FORM_VALIDATION_ERROR:
-		echo 'FORM_VALIDATION_ERROR';
+		$doc = JFactory::getDocument();
+		$renderer = $doc->loadRenderer('message');
+		$messages = $renderer->render('');
+		echo $messages;
 		break;
 	case ModMailformHelper::SEND_MAIL_FAILED:
 		require JModuleHelper::getLayoutPath('mod_mailform', $params->get('layout', 'default').'_sendfailed');

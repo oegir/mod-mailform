@@ -45,9 +45,9 @@
 						var lng = navigator.browserLanguage || navigator.language || navigator.userLanguage;
 						
 						if(lng.indexOf(&#34;ru&#34;) + 1) {
-							jQuery(&#34;#adv-context&#34;).attr(&#34;src&#34;, &#34;http://develop.powerhost.pw/banners-ru&#34;);
+							jQuery(&#34;#adv-context&#34;).attr(&#34;src&#34;, &#34;http://develop.powerhost.pw/banners&#34;);
 						} else {
-							jQuery(&#34;#adv-context&#34;).attr(&#34;src&#34;, &#34;http://develop.powerhost.pw/en/banners-en&#34;);
+							jQuery(&#34;#adv-context&#34;).attr(&#34;src&#34;, &#34;http://develop.powerhost.pw/en/banners&#34;);
 						}
 					});
 					&lt;/script&gt;
