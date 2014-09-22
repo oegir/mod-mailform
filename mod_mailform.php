@@ -29,19 +29,11 @@ $lang->load('plg_captcha_recaptcha', JPATH_ADMINISTRATOR , $siteLanguage   , tru
 $display = $moduleHelper->checkForm();
 
 switch ($display) {
-	case ModMailformHelper::DISPLAY_EMPTY_FORM:
+	case ModMailformHelper::SEND_JSON:
+		$json = $moduleHelper->getJsonData();
+		echo $json;
+// 		require JModuleHelper::getLayoutPath('mod_mailform', $params->get('layout', 'default').'_sendok');
+		break;
+	default:
 		require JModuleHelper::getLayoutPath('mod_mailform', $params->get('layout', 'default'));
-		break;
-	case ModMailformHelper::SEND_MAIL_OK:
-		require JModuleHelper::getLayoutPath('mod_mailform', $params->get('layout', 'default').'_sendok');
-		break;
-	case ModMailformHelper::FORM_VALIDATION_ERROR:
-		$doc = JFactory::getDocument();
-		$renderer = $doc->loadRenderer('message');
-		$messages = $renderer->render('');
-		echo $messages;
-		break;
-	case ModMailformHelper::SEND_MAIL_FAILED:
-		require JModuleHelper::getLayoutPath('mod_mailform', $params->get('layout', 'default').'_sendfailed');
-		break;
 }

@@ -18,10 +18,7 @@ defined('_JEXEC') or die;
  */
 class ModMailformHelper {
 	const DISPLAY_EMPTY_FORM = 1;
-	const SEND_MAIL_OK = 2;
-	const FORM_VALIDATION_ERROR = 3;
-	const SEND_MAIL_FAILED = 4;
-	const NO_VALUE = 5;
+	const SEND_JSON = 2;
 	
 	/**
 	 * Объект текущего модуля
@@ -67,9 +64,6 @@ class ModMailformHelper {
 	 * 		- value - значение поля, загружаемое из формы
 	 * 		- default_value - значение по-умолчанию, до загрузки формы
 	 * 		- placeholder - символьная строка, на которая будет заменена в тектсте e-mail сообщения на содержимое поля формы
-	 * 		- is_error - признак, что пользователь ввел некорректное значени
-	 * 							@see ModMailformHelper::testFormFields()
-	 * 		- return_message - сообщение для возврата пользователю
 	 * 
 	 * @see ModMailformHelper::getFormData()
 	 * @access private
@@ -84,8 +78,6 @@ class ModMailformHelper {
 				'value' => Null,
 				'default_value' => '',
 				'placeholder' => '%name%',
-				'is_error' => false,
-				'return_message' => '',
 		),
 		'email' => array(
 				'type' => 'email',
@@ -95,8 +87,6 @@ class ModMailformHelper {
 				'value' => Null,
 				'default_value' => '',
 				'placeholder' => '%email%',
-				'is_error' => false,
-				'return_message' => '',
 		),
 		'subject' => array(
 				'type' => 'text',
@@ -106,8 +96,6 @@ class ModMailformHelper {
 				'value' => Null,
 				'default_value' => '',
 				'placeholder' => '%subject%',
-				'is_error' => false,
-				'return_message' => '',
 		),
 		'text' => array(
 				'type' => 'text',
@@ -117,8 +105,6 @@ class ModMailformHelper {
 				'value' => Null,
 				'default_value' => '',
 				'placeholder' => '%message%',
-				'is_error' => false,
-				'return_message' => '',
 		),
 		'email_copy' => array(
 				'type' => 'bool',
@@ -127,8 +113,6 @@ class ModMailformHelper {
 				'field_label' => '',
 				'value' => Null,
 				'default_value' => false,
-				'is_error' => false,
-				'return_message' => '',
 		),
 		'recaptcha_response_field' => array(
 				'type' => 'captcha',
@@ -137,8 +121,6 @@ class ModMailformHelper {
 				'field_label' => '',
 				'value' => Null,
 				'default_value' => '',
-				'is_error' => false,
-				'return_message' => '',
 		),
 	);
 	
@@ -159,6 +141,23 @@ class ModMailformHelper {
 	);
 	
 	/**
+	 * Массив с данными, отправляемыми клиенту после сабмита (будет закодирован в JSON)
+	 * - SystemMessage,
+	 * 		- HTML-код c системными сообщениями Joomla,
+	 * - Data,
+	 * 		- Данные для js-скрипта на стороне клиента (массив)
+	 *
+	 * @see ModMailformHelper::setSystemMessage()
+	 * @see ModMailformHelper::setErrorFieldData()
+	 * @access private
+	 * @var string
+	 */
+	private $formData = array(
+		'SystemMessage' => '',
+		'Data' => '',
+	);
+	
+	/**
 	 * Загружает данные формы
 	 */
 	private function getFormData() {
@@ -175,6 +174,7 @@ class ModMailformHelper {
 	 */
 	private function testFormFields() {
 		$form_ok = true;
+		$field_ok = true;
 		
 		foreach ($this->form_fields as $field_name => &$field_data) {
 			
@@ -185,7 +185,7 @@ class ModMailformHelper {
 					$field_data['value'] = trim( htmlspecialchars( $field_data['value'] ) );
 					
 					if ( $field_data['required'] && ( strlen( $field_data['value'] ) == 0 ) ) {
-						$field_data['is_error'] = true;
+						$field_ok = false;
 						JError::raiseWarning( $field_data['field_label'], JText::_('MOD_MAILFORM_REQUIRED_TEXTFIELD_ISEMPTY') );
 					}
 					break;
@@ -196,10 +196,10 @@ class ModMailformHelper {
 					$pattern = '/^[0-9A-zА-Яа-яЁё\.\-_]+@[0-9A-zА-Яа-яЁё\-_]+\.[0-9A-zА-Яа-яЁё\-_]+$/u';
 					
 					if ($field_data['required'] && ( strlen( $field_data['value'] ) == 0 ) ) {
-						$field_data['is_error'] = true;
+						$field_ok = false;
 						JError::raiseWarning( $field_data['field_label'], JText::_('MOD_MAILFORM_REQUIRED_MAILFIELD_ISEMPTY') );
 					} elseif ( ( strlen( $field_data['value'] ) > 0 ) && !preg_match($pattern, $field_data['value']) ) {
-						$field_data['is_error'] = true;
+						$field_ok = false;
 						JError::raiseWarning( $field_data['field_label'], JText::_('MOD_MAILFORM_MAILFIELD_NOTVALID') );
 					}
 					break;
@@ -221,15 +221,31 @@ class ModMailformHelper {
 						$captcha_is_valid = true;
 					}
 					if ( !$captcha_is_valid ) {
-						$field_data['is_error'] = true;
+						$field_ok = false;
 						JError::raiseWarning( $field_data['field_label'], JText::_('MOD_MAILFORM_CAPTHCA_ISINVALID') );
 					}
 					break;
 			}
-			$form_ok &= !$field_data['is_error'];
+			if (!$field_ok) {
+				$form_ok = false;
+				$this->setErrorFieldData($field_name);
+			}
 		}
 		
 		return $form_ok;
+	}
+	
+	/**
+	 * Устанавливает в $formData['Data'] имя поля и CSS-класс ошибки
+	 * 
+	 * @see ModMailformHelper::formData
+	 *
+	 * @param array $data Данные для отправки.
+	 *
+	 * @return void
+	 */
+	private function setErrorFieldData($field_name) {
+		$this->formData['Data'][$field_name] = isset($this->formData['Data'][$field_name]) ? $this->formData['Data'][$field_name] . " invalid" : "invalid";
 	}
 	
 	/**
@@ -353,6 +369,19 @@ class ModMailformHelper {
 	}
 	
 	/**
+	 * Устанавливает в поле класса HTML-код системного сообщения
+	 *
+	 * @param   integer  $formState  Код состояния формы
+	 *
+	 * @return  void
+	 */
+	private function setSystemMessage() {
+		$doc = JFactory::getDocument();
+		$renderer = $doc->loadRenderer('message');
+		$this->formData['SystemMessage'] = $renderer->render('');
+	}
+	
+	/**
 	 * Конструктор класса.
 	 *
 	 * @param   stdClass  $module  Объект текущего модуля
@@ -389,53 +418,50 @@ class ModMailformHelper {
 	}
 	
 	/**
-	 * Возвращает имя CSS-класса, если поле обязательное или пустую строку
+	 * Возвращает через пробел имена CSS-классов соответственно имни поля
 	 *
-	 * @param   array  $required массив со списком имен обязательных полей
+	 * @param   sting  $name имя поля
 	 *
 	 * @return  string
 	 */
-	public function getRequiredClass($name) {
+	public function getFieldClasses($name) {
 		$result = '';
-// 		$result = $this->form_fields[$name]['required'] ? 'required' : '' ;
+		
+		if ( isset($this->form_fields[$name]) ) {
+// 			$result = $this->form_fields[$name]['required'] ? 'required' : '' ;
+			$result .= $this->form_fields[$name]['is_error'] ? ' invalid' : '' ;
+		}
 		return $result;
 	}
 	
 	/**
-	 * Возвращает jQuery-скрипт для Ajax-отправки формы
+	 * Возвращает через пробел имена CSS-классов соответственно имни поля
+	 *
+	 * @param   sting  $name имя поля
 	 *
 	 * @return  string
 	 */
-	public function getSendScript() {
+	public function getLabelClasses($name) {
+		$result = '';
+	
+		if ( isset($this->form_fields[$name]) ) {
+			$result = $this->form_fields[$name]['is_error'] ? 'invalid' : '' ;
+		}
+		return $result;
+	}
+	
+	/**
+	 * Возвращает jQuery-скрипт для подключения обработчиков событий броузера
+	 *
+	 * @return  string
+	 */
+	public function getEventsScript() {
 		$javascript  =	'jQuery( document ).ready(function () {';
-		$javascript .=		'jQuery("#emailForm_' . $this->module->id . '").on( "submit", function() {';
-		$javascript .=			'var form_data = jQuery("#emailForm_' . $this->module->id . '").serialize();';
-		$javascript .=			'jQuery.ajax({';
-		$javascript .=				'type: "POST",';
-		$javascript .=				'url: "' . JFactory::getURI()->base(). 'modules/' . $this->module->module . '/sendformajx.php",';
-		$javascript .=				'data:form_data,';
-		$javascript .=				'dataType:"text",';
-		$javascript .=				'timeout:30000,';
-		$javascript .=				'async:false,';
-		$javascript .=				'error: function(xhr) {';
-		$javascript .=					'console.log(\'Ошибка!\'+xhr.status+\' \'+xhr.statusText);';
-		$javascript .=				'},'; // Конец анонимной функции
-		$javascript .=				'success: function(msg) {';
-		$javascript .=					'jQuery("#mod_mailform_' . $this->module->id . ' div.modal-body").html("<p>" + msg + "</p>");';
-		$javascript .=				'}'; // Конец анонимной функции
-		$javascript .=			'});'; // Конец списка параметров функции 'ajax'
-		$javascript .=		'});'; // Конец списка параметров функции 'on'
-		$javascript .=		'jQuery("#mod_mailform_btn_' . $this->module->id . '").on( "click", function() {';
-		$javascript .=			'var spacer = jQuery("<div />", {';
-		$javascript .=				'id: "mod_mailform_spacer_' . $this->module->id . '"';
-		$javascript .=			'}).css("display", "none");'; // Конец списка параметров функции 'jQuery'
-		$javascript .=			'var messageContainer = jQuery("#system-message-container");';
-		$javascript .=			'messageContainer.replaceWith(spacer);';
-		$javascript .=			'messageContainer.prependTo( jQuery("#modal_body_' . $this->module->id . '") );';
-		$javascript .=		'});'; // Конец списка параметров функции 'on'
-		$javascript .=		'jQuery("#mod_mailform_94").on( "hide", function() {';
-		$javascript .=			'jQuery("#mod_mailform_spacer_94").replaceWith( jQuery("#system-message-container") );';
-		$javascript .=		'});'; // Конец списка параметров функции 'on'
+		$javascript .=		'modMailformAddEvents(
+								"' . $this->module->id . '",
+								"' . JFactory::getURI()->base(). '",
+								"' . $this->module->module . '"
+							);'; // Конец списка параметров функции 'modMailformAddEvents'
 		$javascript .=	'});'; // Конец списка параметров функции 'ready'
 		return $javascript;
 	}
@@ -465,24 +491,31 @@ class ModMailformHelper {
 	 */
 	public function checkForm() {
 		$cufaction = $this->post->get ( 'cufaction', null );
+		$formState = self::DISPLAY_EMPTY_FORM;
 		
 		if ( !$cufaction == 'sendmail' ) {
 			// Если не было сабмита - отобразим пустую форму
-			return self::DISPLAY_EMPTY_FORM;
+			$formState = self::DISPLAY_EMPTY_FORM;
 		} else {
 			// Подготовим данные формы для проверки
 			$this->getFormData();
 			
 			if ( $this->testFormFields() ) {
-				
-				if ( $this->sendemail() ) {
-					return self::SEND_MAIL_OK;
-				} else {
-					return self::SEND_MAIL_FAILED;
-				}
-			} else {
-				return self::FORM_VALIDATION_ERROR;
+				$this->sendemail();
 			}
+			$formState = self::SEND_JSON;
 		}
+		$this->setSystemMessage();
+		
+		return $formState;
+	}
+	
+	/**
+	 * Возвращает HTML-код системного сообщения
+	 *
+	 * @return  string
+	 */
+	public function getJsonData() {
+		return new JResponseJson($this->formData);
 	}
 }
