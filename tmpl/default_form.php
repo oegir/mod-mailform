@@ -11,15 +11,15 @@ defined('_JEXEC') or die;
 
 // echo $moduleHelper->getMessage();
 ?>
-<form action="javascript:void(null);" method="post" name="emailForm_<?php echo $module->id ?>" id="emailForm_<?php echo $module->id ?>" class="form-validate form-horizontal">
+<form action="javascript:void(null);" method="post" name="modMailform_<?php echo $module->id ?>" id="modMailform_<?php echo $module->id ?>" class="form-validate form-horizontal">
 	<div id="write_us_div">
 		<fieldset id="write_us_fieldset">
 			<div class="control-group">
 				<div class="control-label">
-					<label for="contact_name" class="<?php echo $moduleHelper->getLabelClasses('name'); ?>">&nbsp;<?php echo JText::_( 'COM_CONTACT_CONTACT_EMAIL_NAME_LABEL' ); ?>:</label>
+					<label id="modMailformLabel_name" for="modMailformField_name" class="<?php echo $moduleHelper->getLabelClasses('name'); ?>">&nbsp;<?php echo JText::_( 'COM_CONTACT_CONTACT_EMAIL_NAME_LABEL' ); ?>:</label>
 				</div>
 				<div class="controls">
-					<input type="text" name="name" id="contact_name" size="30" class="inputbox input-xlarge <?php echo $moduleHelper->getFieldClasses('name'); ?>" value="" />
+					<input type="text" name="name" id="modMailformField_name" size="30" class="inputbox input-xlarge <?php echo $moduleHelper->getFieldClasses('name'); ?>" value="" />
 				</div>
 			</div>
 			<div class="control-group">

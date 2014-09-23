@@ -141,20 +141,17 @@ class ModMailformHelper {
 	);
 	
 	/**
-	 * Массив с данными, отправляемыми клиенту после сабмита (будет закодирован в JSON)
-	 * - SystemMessage,
-	 * 		- HTML-код c системными сообщениями Joomla,
-	 * - Data,
-	 * 		- Данные для js-скрипта на стороне клиента (массив)
-	 *
-	 * @see ModMailformHelper::setSystemMessage()
-	 * @see ModMailformHelper::setErrorFieldData()
+	 * Массив с данными, возвращаемыми клиенту
+	 * - success boolean - признак успешности отправки формы,
+	 * - errorFields array - список полей с ошибками,
+	 * 
+	 * @see ModMailformHelper::testFormFields()
 	 * @access private
 	 * @var string
 	 */
 	private $formData = array(
-		'SystemMessage' => '',
-		'Data' => '',
+			'success' => true,
+			'errorFields' => array(),
 	);
 	
 	/**
@@ -174,9 +171,9 @@ class ModMailformHelper {
 	 */
 	private function testFormFields() {
 		$form_ok = true;
-		$field_ok = true;
 		
 		foreach ($this->form_fields as $field_name => &$field_data) {
+			$field_ok = true;
 			
 			switch ($field_data['type']) {
 				
@@ -228,24 +225,12 @@ class ModMailformHelper {
 			}
 			if (!$field_ok) {
 				$form_ok = false;
-				$this->setErrorFieldData($field_name);
+				$this->formData['success'] = $form_ok;
+				$this->formData['errorFields'][] = $field_name;
 			}
 		}
 		
 		return $form_ok;
-	}
-	
-	/**
-	 * Устанавливает в $formData['Data'] имя поля и CSS-класс ошибки
-	 * 
-	 * @see ModMailformHelper::formData
-	 *
-	 * @param array $data Данные для отправки.
-	 *
-	 * @return void
-	 */
-	private function setErrorFieldData($field_name) {
-		$this->formData['Data'][$field_name] = isset($this->formData['Data'][$field_name]) ? $this->formData['Data'][$field_name] . " invalid" : "invalid";
 	}
 	
 	/**
@@ -366,19 +351,6 @@ class ModMailformHelper {
 		$mailer = null;
 		
 		return !is_object($send);
-	}
-	
-	/**
-	 * Устанавливает в поле класса HTML-код системного сообщения
-	 *
-	 * @param   integer  $formState  Код состояния формы
-	 *
-	 * @return  void
-	 */
-	private function setSystemMessage() {
-		$doc = JFactory::getDocument();
-		$renderer = $doc->loadRenderer('message');
-		$this->formData['SystemMessage'] = $renderer->render('');
 	}
 	
 	/**
@@ -505,17 +477,16 @@ class ModMailformHelper {
 			}
 			$formState = self::SEND_JSON;
 		}
-		$this->setSystemMessage();
 		
 		return $formState;
 	}
 	
 	/**
-	 * Возвращает HTML-код системного сообщения
+	 * Возвращает объект для отправки клиенту
 	 *
-	 * @return  string
+	 * @return  JResponseJson
 	 */
 	public function getJsonData() {
-		return new JResponseJson($this->formData);
+		return new JResponseJson( $this->formData['errorFields'], '', !$this->formData['success'] );
 	}
 }
