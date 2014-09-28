@@ -400,24 +400,7 @@ class ModMailformHelper {
 		$result = '';
 		
 		if ( isset($this->form_fields[$name]) ) {
-// 			$result = $this->form_fields[$name]['required'] ? 'required' : '' ;
-			$result .= $this->form_fields[$name]['is_error'] ? ' invalid' : '' ;
-		}
-		return $result;
-	}
-	
-	/**
-	 * Возвращает через пробел имена CSS-классов соответственно имни поля
-	 *
-	 * @param   sting  $name имя поля
-	 *
-	 * @return  string
-	 */
-	public function getLabelClasses($name) {
-		$result = '';
-	
-		if ( isset($this->form_fields[$name]) ) {
-			$result = $this->form_fields[$name]['is_error'] ? 'invalid' : '' ;
+			$result = $this->form_fields[$name]['required'] ? 'required' : '' ;
 		}
 		return $result;
 	}
@@ -462,10 +445,10 @@ class ModMailformHelper {
 	 * @return  integer
 	 */
 	public function checkForm() {
-		$cufaction = $this->post->get ( 'cufaction', null );
+		$action = $this->post->get ( 'action', null );
 		$formState = self::DISPLAY_EMPTY_FORM;
 		
-		if ( !$cufaction == 'sendmail' ) {
+		if ( !$action == 'sendmail' ) {
 			// Если не было сабмита - отобразим пустую форму
 			$formState = self::DISPLAY_EMPTY_FORM;
 		} else {

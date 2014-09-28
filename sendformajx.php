@@ -12,7 +12,7 @@ require_once(JPATH_BASE.DS.'includes'.DS.'framework.php');
 $joomla_app = JFactory::getApplication('site');
 $joomla_app->initialise();
 // Запускаем модуль
-$module_title = htmlspecialchars( $joomla_app->input->post->get('mtitle', '', 'string') );
+$module_title = htmlspecialchars( $joomla_app->input->post->get('title', '', 'string') );
 
 if ( $module_title  != '' ) {
 	$module = JModuleHelper::getModule('mod_mailform', $module_title);

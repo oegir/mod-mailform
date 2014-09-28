@@ -3,14 +3,18 @@
  */
 
 var MOD_MAILFORM_ID = "modMailform";
+var MOD_MAILFORM_WINDOW = "modMailformWindow";
 var MOD_MAILFORM_OPEN_BUTTON_ID = "modMailformOpenButton";
 var MOD_MAILFORM_SPACER_ID = "modMailformSpacer";
 var MOD_MAILFORM_MODAL_BODY_ID = "modMailformModalBody";
+var MOD_MAILFORM_LABEL_PREFIX = "modMailformLabel";
+var MOD_MAILFORM_FIELD_PREFIX = "modMailformField";
 
 function modMailformAddEvents(moduleId, baseUri, moduleName) {
 	// Отправка формы на сервер
 	jQuery("#" + MOD_MAILFORM_ID + "_" + moduleId).on( "submit", function() {
 		var form_data = jQuery("#" + MOD_MAILFORM_ID + "_" + moduleId).serialize();
+		Joomla.removeMessages();
 		
 		jQuery.ajax({
 			type: "POST",
@@ -26,7 +30,6 @@ function modMailformAddEvents(moduleId, baseUri, moduleName) {
 			
 			success: function(msg) {
 				var r = jQuery.parseJSON(msg);
-//				jQuery("#mod_mailform_" + moduleId + " div.modal-body").html("<p>" + msg + "</p>");
 				Joomla.renderMessages(r.messages);
 				modMailformSetErrorFields(moduleId, r.data);
 			}
@@ -44,11 +47,15 @@ function modMailformAddEvents(moduleId, baseUri, moduleName) {
 		messageContainer.prependTo( jQuery("#" + MOD_MAILFORM_MODAL_BODY_ID + "_" + moduleId) );
 	});
 	// Перенос блока системных сообщений обратно в тело страницы
-	jQuery("#" + MOD_MAILFORM_ID + "_" + moduleId).on( "hide", function() {
+	jQuery("#" + MOD_MAILFORM_WINDOW + "_" + moduleId).on( "hide", function() {
 		jQuery("#" + MOD_MAILFORM_SPACER_ID + "_" + moduleId).replaceWith( jQuery("#system-message-container") );
 	});
 }
 
 function modMailformSetErrorFields(moduleId, fields) {
-	var a = 0;
+	
+	for (var i = 0; i < fields.length; i++) {
+		jQuery("#" + MOD_MAILFORM_ID + "_" + moduleId + " #" + MOD_MAILFORM_LABEL_PREFIX + "_" + fields[i]).addClass("invalid");
+		jQuery("#" + MOD_MAILFORM_ID + "_" + moduleId + " #" + MOD_MAILFORM_FIELD_PREFIX + "_" + fields[i]).addClass("invalid");
+	}
 }
