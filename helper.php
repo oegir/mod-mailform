@@ -412,7 +412,7 @@ class ModMailformHelper {
 	 */
 	public function getEventsScript() {
 		$javascript  =	'jQuery( document ).ready(function () {';
-		$javascript .=		'modMailformAddEvents(
+		$javascript .=		'ModMailform.addEvents(
 								"' . $this->module->id . '",
 								"' . JFactory::getURI()->base(). '",
 								"' . $this->module->module . '"
