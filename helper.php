@@ -482,7 +482,8 @@ class ModMailformHelper {
 		$data = array (
 				'messages' => array (
 						'success' => array (
-								'All right!' => 'That\'s all super!' 
+								'All right!' => 'That\'s all super!',
+								'All good!' => 'That\'s all more super!',
 						) 
 				) 
 		);

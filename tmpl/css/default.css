@@ -1,1 +1,9 @@
 @CHARSET "UTF-8";
+
+.modMailform-spinner {
+	text-align: center;
+	display: none;
+}
+.modMailform-close {
+	display: none;
+}
