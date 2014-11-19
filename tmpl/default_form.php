@@ -16,7 +16,7 @@ defined('_JEXEC') or die;
 		<fieldset id="write_us_fieldset">
 			<div class="control-group">
 				<div class="control-label">
-					<label id="modMailformLabel_name" for="modMailformField_name" class="">&nbsp;<?php echo JText::_( 'COM_CONTACT_CONTACT_EMAIL_NAME_LABEL' ); ?>:</label>
+					<label id="modMailformLabel_name" for="modMailformField_name" class="">&nbsp;<?php echo $moduleHelper->getFiledLabel('name'); ?>:</label>
 				</div>
 				<div class="controls">
 					<!-- <input type="text" name="name" id="modMailformField_name" size="30" class="inputbox input-xlarge <?php echo $moduleHelper->getFieldClasses('name'); ?>" value="" /> -->
@@ -25,7 +25,7 @@ defined('_JEXEC') or die;
 			</div>
 			<div class="control-group">
 				<div class="control-label">
-					<label id="modMailformLabel_email" for="modMailformField_email" class="">&nbsp;<?php echo JText::_( 'JGLOBAL_EMAIL' ); ?>:</label>
+					<label id="modMailformLabel_email" for="modMailformField_email" class="">&nbsp;<?php echo $moduleHelper->getFiledLabel('email'); ?>:</label>
 				</div>
 				<div class="controls">
 					<input type="text" id="modMailformField_email" name="email" size="30" class="inputbox <?php echo $moduleHelper->getFieldClasses('email'); ?> validate-email input-xlarge" maxlength="100" value="" />
@@ -33,14 +33,14 @@ defined('_JEXEC') or die;
 			</div>
 			<div class="control-group">
 				<div class="control-label">
-					<label  id="modMailformLabel_subject" for="modMailformField_subject" class="">&nbsp;<?php echo JText::_( 'COM_CONTACT_CONTACT_MESSAGE_SUBJECT_LABEL' ); ?>:</label>
+					<label  id="modMailformLabel_subject" for="modMailformField_subject" class="">&nbsp;<?php echo $moduleHelper->getFiledLabel('subject'); ?>:</label>
 				</div>
 				<div class="controls">
 					<input type="text" name="subject" id="modMailformField_subject" size="30" class="inputbox input-xlarge <?php echo $moduleHelper->getFieldClasses('subject'); ?>" value="" />
 				</div>
 			</div>
 			<div class="control-group">
-				<label id="modMailformLabel_text" class="control-label" for="modMailformField_text">&nbsp;<?php echo JText::_( 'COM_CONTACT_CONTACT_ENTER_MESSAGE_LABEL' ); ?>:</label>
+				<label id="modMailformLabel_text" class="control-label" for="modMailformField_text">&nbsp;<?php echo $moduleHelper->getFiledLabel('text'); ?>:</label>
 				<div class="controls">
 					<textarea cols="50" rows="10" name="text" id="modMailformField_text" class="inputbox input-xlarge <?php echo $moduleHelper->getFieldClasses('text'); ?>"></textarea>
 				</div>
@@ -52,7 +52,7 @@ defined('_JEXEC') or die;
 	echo $captcha_html[0].'<br />';
 } ?>
 			<div class="control-group">
-				<label id="modMailformLabel_email_copy" class="control-label" for="modMailformField_email_copy"><?php echo JText::_( 'COM_CONTACT_CONTACT_EMAIL_A_COPY_LABEL' ); ?></label>
+				<label id="modMailformLabel_email_copy" class="control-label" for="modMailformField_email_copy"><?php echo $moduleHelper->getFiledLabel('email_copy'); ?></label>
 				<div class="controls">
 					<label class="checkbox">
 						<input type="checkbox" name="email_copy" id="modMailformField_email_copy" value="1" />

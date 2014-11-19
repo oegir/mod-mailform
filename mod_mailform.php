@@ -32,8 +32,8 @@ switch ($display) {
 	case ModMailformHelper::SEND_JSON:
 		$json = $moduleHelper->getJsonData();
 		echo $json;
-// 		require JModuleHelper::getLayoutPath('mod_mailform', $params->get('layout', 'default').'_sendok');
 		break;
+		
 	default:
 		require JModuleHelper::getLayoutPath('mod_mailform', $params->get('layout', 'default'));
 }

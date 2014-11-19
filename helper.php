@@ -131,10 +131,8 @@ class ModMailformHelper {
 	
 	/**
 	 * Массив дополнительных плейсхолдеров их значений для подстановки в текст e-mail-сообщения:
-	 * - %title%,
-	 * - заголовок страницы,
-	 * - %url%,
-	 * - адрес страницы,
+	 * %title% - заголовок страницы,
+	 * %url% - адрес страницы,
 	 *
 	 * @see ModMailformHelper::getAdditInfo()
 	 * @access private
@@ -147,7 +145,7 @@ class ModMailformHelper {
 	
 	/**
 	 * Массив с данными, возвращаемыми клиенту
-	 * - success boolean - признак успешности отправки формы,
+	 * - status int - признак успешности отправки формы,
 	 * - errorFields array - список полей с ошибками,
 	 *
 	 * @see ModMailformHelper::testFormFields()
@@ -155,7 +153,7 @@ class ModMailformHelper {
 	 * @var string
 	 */
 	private $formData = array (
-			'success' => true,
+			'status' => self::SUMMARY_SUCCES,
 			'errorFields' => array () 
 	);
 	
@@ -230,7 +228,7 @@ class ModMailformHelper {
 			}
 			if (! $field_ok) {
 				$form_ok = false;
-				$this->formData ['success'] = $form_ok;
+				$this->formData ['status'] = $form_ok ? self::SUMMARY_SUCCES : self::SUMMARY_ERROR;
 				$this->formData ['errorFields'] [] = $field_name;
 			}
 		}
@@ -361,6 +359,19 @@ class ModMailformHelper {
 	}
 	
 	/**
+	 * Заполняет информацию о полях формы
+	 *
+	 * @return void
+	 */
+	private function setFormFields() {
+		$this->form_fields ['name'] ['field_label'] = JText::_ ( 'MOD_MAILFORM_FIELD_NAME_LABEL' );
+		$this->form_fields ['email'] ['field_label'] = JText::_ ( 'JGLOBAL_EMAIL' );
+		$this->form_fields ['subject'] ['field_label'] = JText::_ ( 'MOD_MAILFORM_FIELD_SUBJECT_LABEL' );
+		$this->form_fields ['text'] ['field_label'] = JText::_ ( 'MOD_MAILFORM_FIELD_TEXT_LABEL' );
+		$this->form_fields ['email_copy'] ['field_label'] = JText::_ ( 'MOD_MAILFORM_FIELD_EMAIL_COPY_LABEL' );
+	}
+	
+	/**
 	 * Конструктор класса.
 	 *
 	 * @param stdClass $module
@@ -371,10 +382,27 @@ class ModMailformHelper {
 	 * @return void
 	 */
 	public function __construct($module, $params) {
+		$this->setFormFields ();
 		$this->module = $module;
 		$this->params = $params;
 		$this->post = JFactory::getApplication ()->input->post;
 		$this->readRequiredFiedsFromParams ();
+	}
+	public static function getAjax() {
+		$joomla_app = JFactory::getApplication ( 'site' );
+		$module_title = htmlspecialchars ( $joomla_app->input->post->get ( 'title', '', 'string' ) );
+		
+		if ($module_title != '') {
+			$module = JModuleHelper::getModule ( 'mod_mailform', $module_title );
+			
+			if ($module->id > 0) {
+				echo JModuleHelper::renderModule ( $module );
+			} else {
+				echo (JText::_ ( 'MOD_MAILFORM_MODULE_NOT_FOUND' ));
+			}
+		} else {
+			echo (JText::_ ( 'MOD_MAILFORM_MODULE_NOT_FOUND' ));
+		}
 	}
 	
 	/**
@@ -416,20 +444,42 @@ class ModMailformHelper {
 	}
 	
 	/**
+	 * Возвращает текстовое значение метки поля по его имени
+	 *
+	 * @param sting $name
+	 *        	имя поля
+	 *        	
+	 * @return string
+	 */
+	public function getFiledLabel($name) {
+		if (isset ( $this->form_fields [$name] )) {
+			return $this->form_fields [$name] ['field_label'];
+		} else {
+			return '';
+		}
+	}
+	
+	/**
 	 * Возвращает jQuery-скрипт для подключения обработчиков событий броузера
 	 *
 	 * @return string
 	 */
 	public function getSettingsScript() {
 		$javascript = 'jQuery( document ).ready(function () {' . PHP_EOL;
-		$javascript .= '	ModMailform.addEvents(' . PHP_EOL;
-		$javascript .= '		"' . $this->module->id . '",' . PHP_EOL;
-		$javascript .= '		"' . JFactory::getURI ()->base () . '",' . PHP_EOL;
-		$javascript .= '		"' . $this->module->module . '"' . PHP_EOL;
-		$javascript .= '	);'. PHP_EOL; // Конец списка параметров функции 'modMailformAddEvents'
-		$javascript .= '});' . PHP_EOL; // Конец списка параметров функции 'ready'
+		$javascript .= '		ModMailform.addEvents(';
+		$javascript .= '"' . $this->module->id . '",';
+		$javascript .= '"' . JFactory::getURI ()->base () . '",';
+		$javascript .= '"' . str_replace ( 'mod_', '', $this->module->module ) . '"';
+		$javascript .= ');' . PHP_EOL; // Конец списка параметров функции 'modMailformAddEvents'
+		$javascript .= '	});' . PHP_EOL; // Конец списка параметров функции 'ready'
 		$javascript .= 'ModMailform.FORM_RESULT_SUCCES = ' . self::SUMMARY_SUCCES . ';' . PHP_EOL;
-		$javascript .= 'ModMailform.FORM_RESULT_ERROR = ' . self::SUMMARY_ERROR . ';';
+		$javascript .= 'ModMailform.FORM_RESULT_ERROR = ' . self::SUMMARY_ERROR . ';' . PHP_EOL;
+		$javascript .= 'ModMailform.FORM_WEIRD_STATUS = {' . PHP_EOL;
+		$javascript .= '	error : {' . PHP_EOL;
+		$javascript .= '		' . JText::_ ( 'MOD_MAILFORM_WEIRD_STATUS_HEAD' ) . ' : "' . JText::_ ( 'MOD_MAILFORM_WEIRD_STATUS' ) . '"' . PHP_EOL;
+		$javascript .= '	}' . PHP_EOL;
+		$javascript .= '}' . PHP_EOL;
+		$javascript .= 'ModMailform.FORM_WEIRD_STATUS_NEXT = "' . JText::_ ( 'MOD_MAILFORM_WEIRD_STATUS_NEXT' ) . '"';
 		return $javascript;
 	}
 	
@@ -477,25 +527,32 @@ class ModMailformHelper {
 	}
 	
 	/**
-	 * Возвращает объект для отправки клиенту
+	 * Возвращает строку ответа, закодированную в JSON
 	 *
-	 * @return JResponseJson
+	 * @return string
 	 */
 	public function getJsonData() {
 		// return new JResponseJson( $this->formData['errorFields'], '', !$this->formData['success'] );
+		// JText._('JLIB_FORM_FIELD_INVALID');
+		$messages = array ();
 		
-		if (!$this->formData['success']) {
+		if ($this->formData ['status'] == self::SUMMARY_ERROR) {
 			
+			foreach ( $this->formData ['errorFields'] as $field_key ) {
+				$messages ['error'] [$field_key] = JText::_ ( 'MOD_MAILFORM_FORM_FIELD_INVALID' );
+				$messages ['error'] [$field_key] .= $this->form_fields [$field_key] ['field_label'];
+			}
+		} else {
+			$messages ['success'] = array (
+					'All right!' => 'That\'s all super!',
+					'All good!' => 'That\'s all more super!' 
+			);
 		}
 		
 		$data = array (
-				'messages' => array (
-						'success' => array (
-								'All right!' => 'That\'s all super!',
-								'All good!' => 'That\'s all more super!',
-						) 
-				),
-				'summary' => self::SUMMARY_SUCCES,
+				'messages' => $messages,
+				'summary' => $this->formData ['status'],
+				'error_fields' => $this->formData ['errorFields'] 
 		);
 		return json_encode ( $data );
 	}

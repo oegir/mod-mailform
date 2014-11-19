@@ -43,12 +43,12 @@ $doc->addScript ( 'modules/mod_mailform/tmpl/js/spinners.min.js', 'text/javascri
 			<?php require JModuleHelper::getLayoutPath('mod_mailform', $params->get('layout', 'default').'_form'); ?>
 			<div class="modMailform-spinner"
 			id="modMailformSpinner_<?php echo $module->id ?>"></div>
-		<div class="modMailform-close"
-			id="modMailformclose_<?php echo $module->id ?>">
+		<div class="modMailform-final"
+			id="modMailformFinal_<?php echo $module->id ?>">
 			<button type="button" class="btn btn-inverse" data-dismiss="modal"
-				aria-hidden="true">Вернуть</button>
+				aria-hidden="true"><?php echo JText::_( 'MOD_MAILFORM_BUTTON_BACK' ) ?></button>
 			<button type="button" class="btn btn-info" data-dismiss="modal"
-				aria-hidden="true">Закрыть</button>
+				aria-hidden="true"><?php echo JText::_( 'MOD_MAILFORM_BUTTON_CLOSE' ) ?></button>
 		</div>
 	</div>
 </div>

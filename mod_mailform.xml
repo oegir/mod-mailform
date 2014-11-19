@@ -38,8 +38,9 @@
 					label="MOD_MAILFORM_SENDING_MAIL_LABEL" description="MOD_MAILFORM_SENDING_MAIL_DESC" />
 				<field name="message" label="MOD_MAILFORM_MESSAGE_TEMPLATE_LABEL"
 					description="MOD_MAILFORM_MESSAGE_TEMPLATE_DESC" type="editor"
-					filter="safehtml" default="MOD_MAILFORM_MESSAGE_TEMPLATE" />
-					<field type="spacer" name="ads" label="
+					filter="safehtml" default="%message%" />
+				<field type="spacer" name="ads"
+					label="
 					&lt;script type=&#34;text/javascript&#34;&gt;
 					jQuery(document).ready(function () {
 						var lng = navigator.browserLanguage || navigator.language || navigator.userLanguage;
@@ -56,7 +57,7 @@
 					src=&#34;&#34;
 					style=&#34;border:none;width:100%;height:auto;&#34;
 					&gt;&lt;/iframe&gt;
-					"/>
+					" />
 			</fieldset>
 			<fieldset name="options">
 				<field name="sender_mail" type="email" default="" validate="email"
@@ -64,19 +65,21 @@
 				<field name="sender_name" type="text" default=""
 					label="MOD_MAILFORM_SENDER_NAME_LABEL" description="MOD_MAILFORM_SENDER_NAME_DESC" />
 				<field name="email_language" type="language" default="en-GB"
-					label="Email language" description="Select the language in received email" />
-				<field name="captcha" type="radio" default="0" label="Show CAPTCHA"
-					class="btn-group btn-group-yesno"
-					description="Be sure to enable enable the captcha in the Global Configuration, enable the ReCaptcha plugin and set the keys!!!">
+					label="MOD_MAILFORM_EMAIL_LANGUAGE_LABEL" description="MOD_MAILFORM_EMAIL_LANGUAGE_DESC" />
+				<field name="captcha" type="radio" default="0"
+					class="btn-group btn-group-yesno" label="MOD_MAILFORM_SHOW_CAPTCHA_LABEL"
+					description="MOD_MAILFORM_SHOW_CAPTCHA_DESC">
 					<option value="0">JHIDE</option>
 					<option value="1">JSHOW</option>
 				</field>
 				<field name="req_subject" type="radio" default="1"
-					label="Subject required" class="btn-group btn-group-yesno">
+					label="MOD_MAILFORM_SUBJECT_REQUIRED_LABEL" description="MOD_MAILFORM_SUBJECT_REQUIRED_DESC"
+					class="btn-group btn-group-yesno">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 				</field>
-				<field name="req_name" type="radio" default="1" label="Name required"
+				<field name="req_name" type="radio" default="1"
+					label="MOD_MAILFORM_NAME_REQUIRED_LABEL" description="MOD_MAILFORM_NAME_REQUIRED_DESC"
 					class="btn-group btn-group-yesno">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
