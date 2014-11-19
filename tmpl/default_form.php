@@ -19,7 +19,8 @@ defined('_JEXEC') or die;
 					<label id="modMailformLabel_name" for="modMailformField_name" class="">&nbsp;<?php echo JText::_( 'COM_CONTACT_CONTACT_EMAIL_NAME_LABEL' ); ?>:</label>
 				</div>
 				<div class="controls">
-					<input type="text" name="name" id="modMailformField_name" size="30" class="inputbox input-xlarge <?php echo $moduleHelper->getFieldClasses('name'); ?>" value="" />
+					<!-- <input type="text" name="name" id="modMailformField_name" size="30" class="inputbox input-xlarge <?php echo $moduleHelper->getFieldClasses('name'); ?>" value="" /> -->
+					<input type="text" name="name" id="modMailformField_name" size="30" class="inputbox input-xlarge" value="" />
 				</div>
 			</div>
 			<div class="control-group">

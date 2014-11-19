@@ -18,6 +18,8 @@ defined ( '_JEXEC' ) or die ();
 class ModMailformHelper {
 	const DISPLAY_EMPTY_FORM = 1;
 	const SEND_JSON = 2;
+	const SUMMARY_SUCCES = 3;
+	const SUMMARY_ERROR = 4;
 	
 	/**
 	 * Объект текущего модуля
@@ -418,14 +420,16 @@ class ModMailformHelper {
 	 *
 	 * @return string
 	 */
-	public function getEventsScript() {
-		$javascript = 'jQuery( document ).ready(function () {';
-		$javascript .= 'ModMailform.addEvents(
-								"' . $this->module->id . '",
-								"' . JFactory::getURI ()->base () . '",
-								"' . $this->module->module . '"
-							);'; // Конец списка параметров функции 'modMailformAddEvents'
-		$javascript .= '});'; // Конец списка параметров функции 'ready'
+	public function getSettingsScript() {
+		$javascript = 'jQuery( document ).ready(function () {' . PHP_EOL;
+		$javascript .= '	ModMailform.addEvents(' . PHP_EOL;
+		$javascript .= '		"' . $this->module->id . '",' . PHP_EOL;
+		$javascript .= '		"' . JFactory::getURI ()->base () . '",' . PHP_EOL;
+		$javascript .= '		"' . $this->module->module . '"' . PHP_EOL;
+		$javascript .= '	);'. PHP_EOL; // Конец списка параметров функции 'modMailformAddEvents'
+		$javascript .= '});' . PHP_EOL; // Конец списка параметров функции 'ready'
+		$javascript .= 'ModMailform.FORM_RESULT_SUCCES = ' . self::SUMMARY_SUCCES . ';' . PHP_EOL;
+		$javascript .= 'ModMailform.FORM_RESULT_ERROR = ' . self::SUMMARY_ERROR . ';';
 		return $javascript;
 	}
 	
@@ -479,13 +483,19 @@ class ModMailformHelper {
 	 */
 	public function getJsonData() {
 		// return new JResponseJson( $this->formData['errorFields'], '', !$this->formData['success'] );
+		
+		if (!$this->formData['success']) {
+			
+		}
+		
 		$data = array (
 				'messages' => array (
 						'success' => array (
 								'All right!' => 'That\'s all super!',
 								'All good!' => 'That\'s all more super!',
 						) 
-				) 
+				),
+				'summary' => self::SUMMARY_SUCCES,
 		);
 		return json_encode ( $data );
 	}

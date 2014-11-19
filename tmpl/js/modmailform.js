@@ -15,6 +15,18 @@ ModMailform.FORM_SPINNER = "modMailformSpinner";
 
 ModMailform.spinners = Array();
 
+/**
+ * Регистрирует обработчики для событий формы
+ * 
+ * @param moduleId
+ *            int - id текущего модуля
+ * @param baseUri
+ *            String - URL сайта
+ * @param moduleName
+ *            String - идентификатор модуля
+ * 
+ * @returns void
+ */
 ModMailform.addEvents = function(moduleId, baseUri, moduleName) {
 	// Отправка формы на сервер
 	jQuery("#" + ModMailform.FORM_ID + "_" + moduleId).on("submit", function() {
@@ -106,6 +118,16 @@ ModMailform.sendMessage = function(moduleId, baseUri, moduleName) {
 	});
 }
 
+/**
+ * Назначает полям формы CSS-стили ошибок
+ * 
+ * @param moduleId
+ *            int - id текущего модуля
+ * @param fields
+ *            Array - массив строк с именами полей
+ * 
+ * @returns void
+ */
 ModMailform.setErrorFields = function(moduleId, fields) {
 
 	for (var i = 0; i < fields.length; i++) {
