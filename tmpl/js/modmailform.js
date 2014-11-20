@@ -13,6 +13,7 @@ ModMailform.FORM_LABEL_PREFIX = "modMailformLabel";
 ModMailform.FORM_FIELD_PREFIX = "modMailformField";
 ModMailform.FORM_SPINNER = "modMailformSpinner";
 ModMailform.FORM_FINAL_BUTTONS = "modMailformFinal";
+ModMailform.FORM_REVERT_BUTTON = "modMailformRevert";
 
 ModMailform.spinners = Array();
 
@@ -47,10 +48,15 @@ ModMailform.addEvents = function(moduleId, baseUri, moduleName) {
 				messageContainer.prependTo(jQuery("#"
 						+ ModMailform.FORM_MODAL_BODY_ID + "_" + moduleId));
 			});
-	// Перенос блока системных сообщений обратно в тело страницы
+	// Сброс внесенных изменений
 	jQuery("#" + this.FORM_WINDOW + "_" + moduleId).on(
 			"hide",
 			function() {
+				Joomla.removeMessages();
+				ModMailform.hideButtons(moduleId);
+				ModMailform.hideSpinner(moduleId);
+				jQuery("#" + ModMailform.FORM_ID + "_" + moduleId).trigger('reset');
+				ModMailform.showForm(moduleId);
 				jQuery("#" + ModMailform.FORM_SPACER_ID + "_" + moduleId)
 						.replaceWith(jQuery("#system-message-container"));
 			});
@@ -68,6 +74,13 @@ ModMailform.addEvents = function(moduleId, baseUri, moduleName) {
 	var spinner = Spinners.create(jQuery("#" + ModMailform.FORM_SPINNER + "_"
 			+ moduleId), spinner_settings);
 	ModMailform.spinners[ModMailform.FORM_SPINNER + "_" + moduleId] = spinner;
+	// Возврат на экран формы
+	jQuery("#" + this.FORM_REVERT_BUTTON + "_" + moduleId).on("click",
+			function() {
+				ModMailform.hideButtons(moduleId);
+				Joomla.removeMessages();
+				ModMailform.showForm(moduleId);
+			});
 }
 
 /**
@@ -94,20 +107,24 @@ ModMailform.sendMessage = function(moduleId, baseUri, moduleName) {
 	jQuery
 			.ajax({
 				type : "POST",
-				url : baseUri + "index.php?option=com_ajax&module=" + moduleName + "&format=raw",
+				url : baseUri + "index.php?option=com_ajax&module="
+						+ moduleName + "&format=raw",
 				data : form_data,
 				dataType : "text",
 				timeout : 30000,
 				async : true,
 
 				error : function(xhr) {
-					console.log('Ошибка!' + xhr.status + ' ' + xhr.statusText);
+					ModMailform.hideSpinner(moduleId);
+					ModMailform.showButtons(moduleId);
+					Joomla.renderMessages({ error : { 0 : ModMailform.SERVER_NOT_RESPONDING } });
+					console.log(ModMailform.SERVER_NOT_RESPONDING + ": " + xhr.status + ' ' + xhr.statusText);
 				},
 
 				success : function(msg) {
 					var messages;
 					ModMailform.hideSpinner(moduleId);
-					
+
 					try {
 						var r = jQuery.parseJSON(msg);
 					} catch (e) {
@@ -117,21 +134,29 @@ ModMailform.sendMessage = function(moduleId, baseUri, moduleName) {
 						return;
 					}
 
-					if (r.summary == ModMailform.FORM_RESULT_ERROR) {
-						ModMailform.setErrorFields(moduleId, r.error_fields);
+					if (r.message == ModMailform.FORM_RESULT_FIELDS_ERROR) {
+						ModMailform.setErrorFields(moduleId, r.data);
 						ModMailform.showForm(moduleId);
 						messages = r.messages;
-					} else if (r.summary == ModMailform.FORM_RESULT_SUCCES) {
+					} else if (r.message == ModMailform.FORM_RESULT_SEND_ERROR) {
+						ModMailform.showButtons(moduleId);
+						messages = r.messages;
+					} else if (r.message == ModMailform.FORM_RESULT_SUCCES) {
 						ModMailform.showButtons(moduleId);
 						messages = r.messages;
 					} else {
 						messages = ModMailform.FORM_WEIRD_STATUS;
+						var index = 1;
 
 						if ('messages' in r) {
-							messages.error[ModMailform.FORM_WEIRD_STATUS_NEXT] = ModMailform.FORM_WEIRD_STATUS_NEXT;
+							messages.error[index++] = ModMailform.FORM_WEIRD_STATUS_NEXT;
 
-							jQuery.each(r.messages, function(key, value) {
-								messages[key] = value;
+							jQuery.each(r.messages, function(message_type,
+									values) {
+
+								jQuery.each(values, function(key, value) {
+									messages[message_type][index++] = value;
+								});
 							});
 						}
 						ModMailform.showButtons(moduleId);
@@ -166,6 +191,20 @@ ModMailform.hideForm = function(moduleId) {
 ModMailform.showForm = function(moduleId) {
 	jQuery("#" + ModMailform.FORM_ID + "_" + moduleId).css({
 		display : 'block'
+	});
+}
+
+/**
+ * Скрывает блок с финальными кнопками
+ * 
+ * @param moduleId
+ *            int - id текущего модуля
+ * 
+ * @returns void
+ */
+ModMailform.hideButtons = function(moduleId) {
+	jQuery("#" + this.FORM_FINAL_BUTTONS + "_" + moduleId).css({
+		display : 'none'
 	});
 }
 

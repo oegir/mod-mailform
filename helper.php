@@ -19,7 +19,8 @@ class ModMailformHelper {
 	const DISPLAY_EMPTY_FORM = 1;
 	const SEND_JSON = 2;
 	const SUMMARY_SUCCES = 3;
-	const SUMMARY_ERROR = 4;
+	const SUMMARY_FIELDS_ERROR = 4;
+	const SUMMARY_SEND_ERROR = 5;
 	
 	/**
 	 * Объект текущего модуля
@@ -58,11 +59,21 @@ class ModMailformHelper {
 	private $post;
 	
 	/**
+	 * Объект JApplication
+	 *
+	 * @see ModMailformHelper::__construct()
+	 * @access private
+	 * @var JApplication
+	 */
+	private $application;
+	
+	/**
 	 * Массив с данными формы.
 	 * Поля массива:
 	 * - Имя поля
 	 * - type - тип поля для проверки правильности заполнения,
 	 *
+	 * @see ModMailformHelper::setFormFields() - Начальное заполнение массива полей,
 	 * @see ModMailformHelper::testFormFields() - filter - фильтер для получения поля,
 	 * @see JFilterInput::clean() - required - признак обязательности заполнения поля,
 	 *      - field_label - Название поля, отобаржаемое в форме
@@ -74,60 +85,7 @@ class ModMailformHelper {
 	 * @access private
 	 * @var Array
 	 */
-	private $form_fields = array (
-			'name' => array (
-					'type' => 'text',
-					'filter' => 'string',
-					'required' => true,
-					'field_label' => '',
-					'value' => Null,
-					'default_value' => '',
-					'placeholder' => '%name%' 
-			),
-			'email' => array (
-					'type' => 'email',
-					'filter' => 'string',
-					'required' => true,
-					'field_label' => '',
-					'value' => Null,
-					'default_value' => '',
-					'placeholder' => '%email%' 
-			),
-			'subject' => array (
-					'type' => 'text',
-					'filter' => 'string',
-					'required' => false,
-					'field_label' => '',
-					'value' => Null,
-					'default_value' => '',
-					'placeholder' => '%subject%' 
-			),
-			'text' => array (
-					'type' => 'text',
-					'filter' => 'string',
-					'required' => true,
-					'field_label' => '',
-					'value' => Null,
-					'default_value' => '',
-					'placeholder' => '%message%' 
-			),
-			'email_copy' => array (
-					'type' => 'bool',
-					'filter' => 'bool',
-					'required' => false,
-					'field_label' => '',
-					'value' => Null,
-					'default_value' => false 
-			),
-			'recaptcha_response_field' => array (
-					'type' => 'captcha',
-					'filter' => 'string',
-					'required' => false,
-					'field_label' => '',
-					'value' => Null,
-					'default_value' => '' 
-			) 
-	);
+	private $form_fields = array ();
 	
 	/**
 	 * Массив дополнительных плейсхолдеров их значений для подстановки в текст e-mail-сообщения:
@@ -186,7 +144,7 @@ class ModMailformHelper {
 					
 					if ($field_data ['required'] && (strlen ( $field_data ['value'] ) == 0)) {
 						$field_ok = false;
-						JError::raiseWarning ( $field_data ['field_label'], JText::_ ( 'MOD_MAILFORM_REQUIRED_TEXTFIELD_ISEMPTY' ) );
+						$this->application->enqueueMessage ( JText::_ ( 'MOD_MAILFORM_FIELD_REQUIRED_EMPTY' ) . ': ' . $field_data ['field_label'], 'error' );
 					}
 					break;
 				
@@ -197,10 +155,10 @@ class ModMailformHelper {
 					
 					if ($field_data ['required'] && (strlen ( $field_data ['value'] ) == 0)) {
 						$field_ok = false;
-						JError::raiseWarning ( $field_data ['field_label'], JText::_ ( 'MOD_MAILFORM_REQUIRED_MAILFIELD_ISEMPTY' ) );
+						$this->application->enqueueMessage ( JText::_ ( 'MOD_MAILFORM_FIELD_REQUIRED_EMPTY' ) . ': ' . $field_data ['field_label'], 'error' );
 					} elseif ((strlen ( $field_data ['value'] ) > 0) && ! preg_match ( $pattern, $field_data ['value'] )) {
 						$field_ok = false;
-						JError::raiseWarning ( $field_data ['field_label'], JText::_ ( 'MOD_MAILFORM_MAILFIELD_NOTVALID' ) );
+						$this->application->enqueueMessage ( JText::_ ( 'MOD_MAILFORM_FIELD_INVALID' ) . ': ' . $field_data ['field_label'], 'error' );
 					}
 					break;
 				
@@ -222,13 +180,13 @@ class ModMailformHelper {
 					}
 					if (! $captcha_is_valid) {
 						$field_ok = false;
-						JError::raiseWarning ( $field_data ['field_label'], JText::_ ( 'MOD_MAILFORM_CAPTHCA_ISINVALID' ) );
+						$this->application->enqueueMessage ( JText::_ ( 'MOD_MAILFORM_CAPTHCA_ISINVALID' ) . ': ' . $field_data ['field_label'], 'error' );
 					}
 					break;
 			}
 			if (! $field_ok) {
 				$form_ok = false;
-				$this->formData ['status'] = $form_ok ? self::SUMMARY_SUCCES : self::SUMMARY_ERROR;
+				$this->formData ['status'] = $form_ok ? self::SUMMARY_SUCCES : self::SUMMARY_FIELDS_ERROR;
 				$this->formData ['errorFields'] [] = $field_name;
 			}
 		}
@@ -364,11 +322,60 @@ class ModMailformHelper {
 	 * @return void
 	 */
 	private function setFormFields() {
-		$this->form_fields ['name'] ['field_label'] = JText::_ ( 'MOD_MAILFORM_FIELD_NAME_LABEL' );
-		$this->form_fields ['email'] ['field_label'] = JText::_ ( 'JGLOBAL_EMAIL' );
-		$this->form_fields ['subject'] ['field_label'] = JText::_ ( 'MOD_MAILFORM_FIELD_SUBJECT_LABEL' );
-		$this->form_fields ['text'] ['field_label'] = JText::_ ( 'MOD_MAILFORM_FIELD_TEXT_LABEL' );
-		$this->form_fields ['email_copy'] ['field_label'] = JText::_ ( 'MOD_MAILFORM_FIELD_EMAIL_COPY_LABEL' );
+		$this->form_fields = array (
+				'name' => array (
+						'type' => 'text',
+						'filter' => 'string',
+						'required' => true,
+						'field_label' => JText::_ ( 'MOD_MAILFORM_FIELD_NAME_LABEL' ),
+						'value' => Null,
+						'default_value' => '',
+						'placeholder' => '%name%' 
+				),
+				'email' => array (
+						'type' => 'email',
+						'filter' => 'string',
+						'required' => true,
+						'field_label' => JText::_ ( 'JGLOBAL_EMAIL' ),
+						'value' => Null,
+						'default_value' => '',
+						'placeholder' => '%email%' 
+				),
+				'subject' => array (
+						'type' => 'text',
+						'filter' => 'string',
+						'required' => false,
+						'field_label' => JText::_ ( 'MOD_MAILFORM_FIELD_SUBJECT_LABEL' ),
+						'value' => Null,
+						'default_value' => '',
+						'placeholder' => '%subject%' 
+				),
+				'text' => array (
+						'type' => 'text',
+						'filter' => 'string',
+						'required' => true,
+						'field_label' => JText::_ ( 'MOD_MAILFORM_FIELD_TEXT_LABEL' ),
+						'value' => Null,
+						'default_value' => '',
+						'placeholder' => '%message%' 
+				),
+				'email_copy' => array (
+						'type' => 'bool',
+						'filter' => 'bool',
+						'required' => false,
+						'field_label' => JText::_ ( 'MOD_MAILFORM_FIELD_EMAIL_COPY_LABEL' ),
+						'value' => Null,
+						'default_value' => false 
+				),
+				'recaptcha_response_field' => array (
+						'type' => 'captcha',
+						'filter' => 'string',
+						'required' => false,
+						'field_label' => '',
+						'value' => Null,
+						'default_value' => '' 
+				) 
+		);
 	}
 	
 	/**
@@ -387,7 +394,14 @@ class ModMailformHelper {
 		$this->params = $params;
 		$this->post = JFactory::getApplication ()->input->post;
 		$this->readRequiredFiedsFromParams ();
+		$this->application = JFactory::getApplication ();
 	}
+	
+	/**
+	 * Точка входа при Ajax-запросе
+	 *
+	 * @return void
+	 */
 	public static function getAjax() {
 		$joomla_app = JFactory::getApplication ( 'site' );
 		$module_title = htmlspecialchars ( $joomla_app->input->post->get ( 'title', '', 'string' ) );
@@ -419,7 +433,7 @@ class ModMailformHelper {
 			$param = ! isset ( $param );
 			
 			if ($param || ! isset ( $this->form_fields [$field_name] )) {
-				throw new Exception ( JText::_ ( 'MOD_MAILFORM_NOT_SUPPORT_FIELD_EXCEPTION' ) . ' ' . $field_name, $this->module->id );
+				throw new Exception ( JText::_ ( 'MOD_MAILFORM_NOT_SUPPORT_FIELD_EXCEPTION' ) . ': ' . $field_name, $this->module->id );
 			} else {
 				$this->form_fields [$field_name] ['required'] = true;
 			}
@@ -473,13 +487,15 @@ class ModMailformHelper {
 		$javascript .= ');' . PHP_EOL; // Конец списка параметров функции 'modMailformAddEvents'
 		$javascript .= '	});' . PHP_EOL; // Конец списка параметров функции 'ready'
 		$javascript .= 'ModMailform.FORM_RESULT_SUCCES = ' . self::SUMMARY_SUCCES . ';' . PHP_EOL;
-		$javascript .= 'ModMailform.FORM_RESULT_ERROR = ' . self::SUMMARY_ERROR . ';' . PHP_EOL;
+		$javascript .= 'ModMailform.FORM_RESULT_FIELDS_ERROR = ' . self::SUMMARY_FIELDS_ERROR . ';' . PHP_EOL;
+		$javascript .= 'ModMailform.FORM_RESULT_SEND_ERROR = ' . self::SUMMARY_SEND_ERROR . ';' . PHP_EOL;
 		$javascript .= 'ModMailform.FORM_WEIRD_STATUS = {' . PHP_EOL;
 		$javascript .= '	error : {' . PHP_EOL;
-		$javascript .= '		' . JText::_ ( 'MOD_MAILFORM_WEIRD_STATUS_HEAD' ) . ' : "' . JText::_ ( 'MOD_MAILFORM_WEIRD_STATUS' ) . '"' . PHP_EOL;
+		$javascript .= '		0 : "' . JText::_ ( 'MOD_MAILFORM_WEIRD_STATUS' ) . '"' . PHP_EOL;
 		$javascript .= '	}' . PHP_EOL;
 		$javascript .= '}' . PHP_EOL;
-		$javascript .= 'ModMailform.FORM_WEIRD_STATUS_NEXT = "' . JText::_ ( 'MOD_MAILFORM_WEIRD_STATUS_NEXT' ) . '"';
+		$javascript .= 'ModMailform.FORM_WEIRD_STATUS_NEXT = "' . JText::_ ( 'MOD_MAILFORM_WEIRD_STATUS_NEXT' ) . '"' . PHP_EOL;
+		$javascript .= 'ModMailform.SERVER_NOT_RESPONDING = "' . JText::_ ( 'MOD_MAILFORM_SERVER_NOT_RESPONDING' ) . '"';
 		return $javascript;
 	}
 	
@@ -518,7 +534,8 @@ class ModMailformHelper {
 			$this->getFormData ();
 			
 			if ($this->testFormFields ()) {
-				$this->sendemail ();
+				$result = $this->sendemail ();
+				$this->formData ['status'] = $result ? self::SUMMARY_SUCCES : self::SUMMARY_SEND_ERROR;
 			}
 			$formState = self::SEND_JSON;
 		}
@@ -532,28 +549,17 @@ class ModMailformHelper {
 	 * @return string
 	 */
 	public function getJsonData() {
-		// return new JResponseJson( $this->formData['errorFields'], '', !$this->formData['success'] );
-		// JText._('JLIB_FORM_FIELD_INVALID');
-		$messages = array ();
+		$summary = ! ($this->formData ['status'] == self::SUMMARY_SUCCES);
+		$data = new JResponseJson ( $this->formData ['errorFields'], $this->formData ['status'], $summary );
 		
-		if ($this->formData ['status'] == self::SUMMARY_ERROR) {
-			
-			foreach ( $this->formData ['errorFields'] as $field_key ) {
-				$messages ['error'] [$field_key] = JText::_ ( 'MOD_MAILFORM_FORM_FIELD_INVALID' );
-				$messages ['error'] [$field_key] .= $this->form_fields [$field_key] ['field_label'];
-			}
-		} else {
-			$messages ['success'] = array (
-					'All right!' => 'That\'s all super!',
-					'All good!' => 'That\'s all more super!' 
+		if ($this->formData ['status'] == self::SUMMARY_SEND_ERROR) {
+			$data->messages = array (
+					'error' => array (
+							JText::_ ( 'MOD_MAILFORM_SEND_MAIL_SERVER_ERR0R' ) 
+					) 
 			);
 		}
 		
-		$data = array (
-				'messages' => $messages,
-				'summary' => $this->formData ['status'],
-				'error_fields' => $this->formData ['errorFields'] 
-		);
-		return json_encode ( $data );
+		return $data->__toString ();
 	}
 }

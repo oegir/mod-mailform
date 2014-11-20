@@ -4,7 +4,7 @@
  * @subpackage  mod_mailform
  *
  * @copyright   Copyright ©. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @license     GNU General Public License version 2 or later
  */
 defined ( '_JEXEC' ) or die ();
 
@@ -15,7 +15,7 @@ JHtml::_ ( 'behavior.formvalidation' );
 $doc = JFactory::getDocument ();
 $doc->addStyleSheet ( 'modules/mod_mailform/tmpl/css/default.css' );
 $doc->addScript ( 'modules/mod_mailform/tmpl/js/modmailform.js', 'text/javascript' );
-// Проверим, что скрипты еще не подключеы на случай более одного модуля на странице
+// Проверим, что скрипты еще не подключеы (на случай более одного модуля на странице)
 $head_data = $doc->getHeadData ();
 $settings_script = $moduleHelper->getSettingsScript ();
 if (! strpos ( $head_data ['script'] ['text/javascript'], $settings_script )) {
@@ -30,12 +30,11 @@ $doc->addScript ( 'modules/mod_mailform/tmpl/js/spinners.min.js', 'text/javascri
 ?>
 <a href="#modMailformWindow_<?php echo $module->id ?>" role="button"
 	class="btn" data-toggle="modal"
-	id="modMailformOpenButton_<?php echo $module->id ?>">Click Me</a>
-<!-- <div class="modal hide fade" id="mod_mailform_<?php echo $module->id ?>" > -->
-<div class="modal" id="modMailformWindow_<?php echo $module->id ?>">
+	id="modMailformOpenButton_<?php echo $module->id ?>"><?php echo $params->get('sender_button', '') ?></a>
+<div class="modal hide fade" id="modMailformWindow_<?php echo $module->id ?>">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal"
-			aria-hidden="true">×</button>
+			id="modMailformTopClose_<?php echo $module->id ?>" aria-hidden="true">×</button>
 		<h3><?php echo JText::_( 'COM_CONTACT_EMAIL_FORM' ); ?></h3>
 	</div>
 	<div class="modal-body"
@@ -45,10 +44,13 @@ $doc->addScript ( 'modules/mod_mailform/tmpl/js/spinners.min.js', 'text/javascri
 			id="modMailformSpinner_<?php echo $module->id ?>"></div>
 		<div class="modMailform-final"
 			id="modMailformFinal_<?php echo $module->id ?>">
-			<button type="button" class="btn btn-inverse" data-dismiss="modal"
-				aria-hidden="true"><?php echo JText::_( 'MOD_MAILFORM_BUTTON_BACK' ) ?></button>
+			<button type="button" class="btn btn-inverse"
+				id="modMailformRevert_<?php echo $module->id ?>" aria-hidden="true">
+				<i class="icon-repeat"></i> <?php echo JText::_( 'MOD_MAILFORM_BUTTON_BACK' ) ?></button>
 			<button type="button" class="btn btn-info" data-dismiss="modal"
-				aria-hidden="true"><?php echo JText::_( 'MOD_MAILFORM_BUTTON_CLOSE' ) ?></button>
+				id="modMailformBigClose_<?php echo $module->id ?>"
+				aria-hidden="true">
+				<i class="icon-remove"></i> <?php echo JText::_( 'MOD_MAILFORM_BUTTON_CLOSE' ) ?></button>
 		</div>
 	</div>
 </div>

@@ -9,7 +9,6 @@
 
 defined('_JEXEC') or die;
 
-// echo $moduleHelper->getMessage();
 ?>
 <form action="javascript:void(null);" method="post" name="modMailform_<?php echo $module->id ?>" id="modMailform_<?php echo $module->id ?>" class="form-validate form-horizontal">
 	<div id="write_us_div">
@@ -19,8 +18,7 @@ defined('_JEXEC') or die;
 					<label id="modMailformLabel_name" for="modMailformField_name" class="">&nbsp;<?php echo $moduleHelper->getFiledLabel('name'); ?>:</label>
 				</div>
 				<div class="controls">
-					<!-- <input type="text" name="name" id="modMailformField_name" size="30" class="inputbox input-xlarge <?php echo $moduleHelper->getFieldClasses('name'); ?>" value="" /> -->
-					<input type="text" name="name" id="modMailformField_name" size="30" class="inputbox input-xlarge" value="" />
+					<input type="text" name="name" id="modMailformField_name" size="30" class="inputbox input-xlarge <?php echo $moduleHelper->getFieldClasses('name'); ?>" value="" />
 				</div>
 			</div>
 			<div class="control-group">
@@ -56,7 +54,6 @@ defined('_JEXEC') or die;
 				<div class="controls">
 					<label class="checkbox">
 						<input type="checkbox" name="email_copy" id="modMailformField_email_copy" value="1" />
-						Additional_Text
 					</label>
 				</div>
 			</div>

@@ -2,12 +2,12 @@
 <extension type="module" version="3.1" client="site" method="upgrade">
 	<name>MOD_MAILFORM</name>
 	<author>Alexey Petrov</author>
-	<creationDate>25.05.2014</creationDate>
+	<creationDate>20.11.2014</creationDate>
 	<copyright>Copyright ©. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later</license>
 	<authorEmail>alexey.webmail@gmail.com</authorEmail>
 	<authorUrl>https://plus.google.com/112429075996731149828</authorUrl>
-	<version>1.0.0</version>
+	<version>0.5.0</version>
 	<description><![CDATA[MOD_MAILFORM_XML_DESCRIPTION]]></description>
 
 	<!-- Update servers -->
@@ -34,7 +34,7 @@
 	<config>
 		<fields name="params">
 			<fieldset name="basic">
-				<field name="sending_mail" type="email" default="" validate="email"
+				<field name="sending_mail" type="email" default="" validate="email" required="true"
 					label="MOD_MAILFORM_SENDING_MAIL_LABEL" description="MOD_MAILFORM_SENDING_MAIL_DESC" />
 				<field name="message" label="MOD_MAILFORM_MESSAGE_TEMPLATE_LABEL"
 					description="MOD_MAILFORM_MESSAGE_TEMPLATE_DESC" type="editor"
@@ -64,6 +64,8 @@
 					label="MOD_SENDER_MAIL_FROM_LABEL" description="MOD_SENDER_MAIL_FROM_DESC" />
 				<field name="sender_name" type="text" default=""
 					label="MOD_MAILFORM_SENDER_NAME_LABEL" description="MOD_MAILFORM_SENDER_NAME_DESC" />
+				<field name="sender_button" type="text" default=""
+					label="MOD_MAILFORM_BUTTON_OPEN_LABEL" description="MOD_MAILFORM_BUTTON_OPEN_DESC" />
 				<field name="email_language" type="language" default="en-GB"
 					label="MOD_MAILFORM_EMAIL_LANGUAGE_LABEL" description="MOD_MAILFORM_EMAIL_LANGUAGE_DESC" />
 				<field name="captcha" type="radio" default="0"
