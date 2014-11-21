@@ -486,6 +486,15 @@ class ModMailformHelper {
 		$javascript .= '"' . str_replace ( 'mod_', '', $this->module->module ) . '"';
 		$javascript .= ');' . PHP_EOL; // Конец списка параметров функции 'modMailformAddEvents'
 		$javascript .= '	});' . PHP_EOL; // Конец списка параметров функции 'ready'
+		return $javascript;
+	}
+	
+	/**
+	 * Возвращает jQuery-скрипт для подключения обработчиков событий броузера
+	 *
+	 * @return string
+	 */
+	public function getConstantsScript() {
 		$javascript .= 'ModMailform.FORM_RESULT_SUCCES = ' . self::SUMMARY_SUCCES . ';' . PHP_EOL;
 		$javascript .= 'ModMailform.FORM_RESULT_FIELDS_ERROR = ' . self::SUMMARY_FIELDS_ERROR . ';' . PHP_EOL;
 		$javascript .= 'ModMailform.FORM_RESULT_SEND_ERROR = ' . self::SUMMARY_SEND_ERROR . ';' . PHP_EOL;

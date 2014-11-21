@@ -66,8 +66,6 @@
 					label="MOD_MAILFORM_SENDER_NAME_LABEL" description="MOD_MAILFORM_SENDER_NAME_DESC" />
 				<field name="sender_button" type="text" default=""
 					label="MOD_MAILFORM_BUTTON_OPEN_LABEL" description="MOD_MAILFORM_BUTTON_OPEN_DESC" />
-				<field name="email_language" type="language" default="en-GB"
-					label="MOD_MAILFORM_EMAIL_LANGUAGE_LABEL" description="MOD_MAILFORM_EMAIL_LANGUAGE_DESC" />
 				<field name="captcha" type="radio" default="0"
 					class="btn-group btn-group-yesno" label="MOD_MAILFORM_SHOW_CAPTCHA_LABEL"
 					description="MOD_MAILFORM_SHOW_CAPTCHA_DESC">

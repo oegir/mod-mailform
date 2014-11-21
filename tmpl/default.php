@@ -17,16 +17,18 @@ $doc->addStyleSheet ( 'modules/mod_mailform/tmpl/css/default.css' );
 $doc->addScript ( 'modules/mod_mailform/tmpl/js/modmailform.js', 'text/javascript' );
 // Проверим, что скрипты еще не подключеы (на случай более одного модуля на странице)
 $head_data = $doc->getHeadData ();
-$settings_script = $moduleHelper->getSettingsScript ();
-if (! strpos ( $head_data ['script'] ['text/javascript'], $settings_script )) {
-	$doc->addScriptDeclaration ( $settings_script );
+$constants_script = $moduleHelper->getConstantsScript ();
+if (! strpos ( $head_data ['script'] ['text/javascript'], $constants_script )) {
+	$doc->addScriptDeclaration ( $constants_script );
 }
+$doc->addScriptDeclaration ( $moduleHelper->getSettingsScript() );
 $excanvas = '<!--[if lte IE 9]> <script src="' . JFactory::getURI ()->base () . 'modules/mod_mailform/tmpl/js/excanvas.js" type="text/javascript"></script> <![endif]-->';
 if (! in_array ( $excanvas, $head_data ['custom'] )) {
 	$doc->addCustomTag ( $excanvas );
 }
 
 $doc->addScript ( 'modules/mod_mailform/tmpl/js/spinners.min.js', 'text/javascript' );
+$headerTag      = htmlspecialchars($params->get('header_tag', 'h3'));
 ?>
 <a href="#modMailformWindow_<?php echo $module->id ?>" role="button"
 	class="btn" data-toggle="modal"
@@ -35,7 +37,10 @@ $doc->addScript ( 'modules/mod_mailform/tmpl/js/spinners.min.js', 'text/javascri
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal"
 			id="modMailformTopClose_<?php echo $module->id ?>" aria-hidden="true">×</button>
-		<h3><?php echo JText::_( 'COM_CONTACT_EMAIL_FORM' ); ?></h3>
+		<?php if ((bool) $module->showtitle) :?>
+			<<?php echo $headerTag . $headerClass . '>' . $module->title; ?></<?php echo $headerTag; ?>>
+		<?php endif; ?>
+		<div class="modMailform-clr"></div>
 	</div>
 	<div class="modal-body"
 		id="modMailformModalBody_<?php echo $module->id ?>">
