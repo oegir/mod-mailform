@@ -14,6 +14,7 @@ ModMailform.FORM_FIELD_PREFIX = "modMailformField";
 ModMailform.FORM_SPINNER = "modMailformSpinner";
 ModMailform.FORM_FINAL_BUTTONS = "modMailformFinal";
 ModMailform.FORM_REVERT_BUTTON = "modMailformRevert";
+ModMailform.FORM_CAPTCHA_HOLDER = "modMailformCaptchaHolder";
 
 ModMailform.spinners = Array();
 
@@ -34,11 +35,12 @@ ModMailform.addEvents = function(moduleId, baseUri, moduleName) {
 	jQuery("#" + ModMailform.FORM_ID + "_" + moduleId).on("submit", function() {
 		ModMailform.sendMessage(moduleId, baseUri, moduleName);
 	});
-	// Перенос блока системных сообщений в модальное окно
+	// Открытие окна отправки собщений
 	jQuery("#" + this.FORM_OPEN_BUTTON_ID + "_" + moduleId).on(
 			"click",
 			function() {
-
+				ModMailform.getCaptcha(moduleId, baseUri, moduleName);
+				// Перенос блока системных сообщений в модальное окно
 				var spacer = jQuery("<div />", {
 					id : ModMailform.FORM_SPACER_ID + "_" + moduleId
 				}).css("display", "none");
@@ -162,6 +164,41 @@ ModMailform.sendMessage = function(moduleId, baseUri, moduleName) {
 						ModMailform.showButtons(moduleId);
 					}
 					Joomla.renderMessages(messages);
+				}
+			});
+}
+
+
+/**
+ * Запрашивает код captcha для размещения его на форме
+ * 
+ * @param moduleId
+ *            int - id текущего модуля
+ * @param baseUri
+ *            String - URL сайта
+ * @param moduleName
+ *            String - идентификатор модуля
+ * 
+ * @returns void
+ */
+ModMailform.getCaptcha = function(moduleId, baseUri, moduleName) {
+	
+	jQuery
+			.ajax({
+				type : "POST",
+				url : baseUri + "index.php?option=com_ajax&module="
+						+ moduleName + "&format=raw&action=captcha",
+				timeout : 30000,
+				async : true,
+
+				error : function(xhr) {
+					Joomla.renderMessages({ error : { 0 : ModMailform.CAPTCHA_NOT_RECEIVED } });
+					console.log(ModMailform.CAPTCHA_NOT_RECEIVED + ": " + xhr.status + ' ' + xhr.statusText);
+				},
+
+				success : function(msg) {
+//					alert(jQuery("#" + ModMailform.FORM_CAPTCHA_HOLDER + "_" +moduleId ).text());
+					alert(msg);
 				}
 			});
 }

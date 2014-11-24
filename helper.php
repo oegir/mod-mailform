@@ -21,6 +21,8 @@ class ModMailformHelper {
 	const SUMMARY_SUCCES = 3;
 	const SUMMARY_FIELDS_ERROR = 4;
 	const SUMMARY_SEND_ERROR = 5;
+	const ACTION_CAPTCHA = "captcha";
+	const ACTION_SEND_MAIL = "sendmail";
 	
 	/**
 	 * Объект текущего модуля
@@ -392,9 +394,9 @@ class ModMailformHelper {
 		$this->setFormFields ();
 		$this->module = $module;
 		$this->params = $params;
-		$this->post = JFactory::getApplication ()->input->post;
-		$this->readRequiredFiedsFromParams ();
 		$this->application = JFactory::getApplication ();
+		$this->post = $this->application->input->post;
+		$this->readRequiredFiedsFromParams ();
 	}
 	
 	/**
@@ -504,7 +506,8 @@ class ModMailformHelper {
 		$javascript .= '	}' . PHP_EOL;
 		$javascript .= '}' . PHP_EOL;
 		$javascript .= 'ModMailform.FORM_WEIRD_STATUS_NEXT = "' . JText::_ ( 'MOD_MAILFORM_WEIRD_STATUS_NEXT' ) . '"' . PHP_EOL;
-		$javascript .= 'ModMailform.SERVER_NOT_RESPONDING = "' . JText::_ ( 'MOD_MAILFORM_SERVER_NOT_RESPONDING' ) . '"';
+		$javascript .= 'ModMailform.SERVER_NOT_RESPONDING = "' . JText::_ ( 'MOD_MAILFORM_SERVER_NOT_RESPONDING' ) . '"' . PHP_EOL;
+		$javascript .= 'ModMailform.CAPTCHA_NOT_RECEIVED = "' . JText::_ ( 'MOD_MAILFORM_CAPTCHA_NOT_RECEIVED' ) . '"';
 		return $javascript;
 	}
 	
@@ -535,7 +538,7 @@ class ModMailformHelper {
 		$action = $this->post->get ( 'action', null );
 		$formState = self::DISPLAY_EMPTY_FORM;
 		
-		if (! $action == 'sendmail') {
+		if (! $action == self::ACTION_SEND_MAIL) {
 			// Если не было сабмита - отобразим пустую форму
 			$formState = self::DISPLAY_EMPTY_FORM;
 		} else {
@@ -570,5 +573,41 @@ class ModMailformHelper {
 		}
 		
 		return $data->__toString ();
+	}
+	
+	/**
+	 * Возвращает html-код каптчи
+	 *
+	 * @return string
+	 */
+	public function getCaptcha() {
+		$lang = JFactory::getLanguage();
+		$lang->load('plg_captcha_recaptcha', JPATH_ADMINISTRATOR, JFactory::getDocument()->language, true);
+		
+		JPluginHelper::importPlugin ( 'captcha' );
+		$this->getDispatcher ()->trigger ( 'onInit', 'modMailformCaptcha_' . $this->module->id );
+		$captcha_html = $moduleHelper->getDispatcher ()->trigger ( 'onDisplay', array (
+				'CUF_CAPTCHA',
+				'modMailformCaptcha_' . $module->id,
+				null 
+		) );
+		return $captcha_html [0] . '<br />';
+	}
+	
+	/**
+	 * Возвращает значение из входящих POST-данных
+	 * 
+	 * @param sting $name
+	 *        	имя поля
+	 * @param mixed $default
+	 *        	значение по умолчанию
+	 * @param string $filter
+	 * 					фильтр, применяемый к значению
+	 *
+	 * @return mixed
+	 * 					Отфильтрованное значение
+	 */
+	public function getPost($name, $default = Null, $filter = 'cmd') {
+		return $this->post->get ( $name, $default, $filter );
 	}
 }

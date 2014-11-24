@@ -43,6 +43,7 @@ defined('_JEXEC') or die;
 					<textarea cols="50" rows="10" name="text" id="modMailformField_text" class="inputbox input-xlarge <?php echo $moduleHelper->getFieldClasses('text'); ?>"></textarea>
 				</div>
 			</div>
+			<div id="modMailformCaptchaHolder_<?php echo $module->id ?>">123</div>
 <?php if ($params->get('captcha')) {
 	JPluginHelper::importPlugin ( 'captcha' );
 	$moduleHelper->getDispatcher()->trigger('onInit', 'modMailformCaptcha_' . $module->id);
@@ -62,5 +63,5 @@ defined('_JEXEC') or die;
 	</div>
 	<input type="hidden" name="action" value="sendmail" />
 	<input type="hidden" name="title" value="<?php echo $module->title ?>" />
-	<?php echo JHTML::_( 'form.token' ); ?>
+	<?php // echo JHTML::_( 'form.token' ); ?>
 </form>

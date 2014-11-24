@@ -13,15 +13,22 @@ defined('_JEXEC') or die;
 require_once __DIR__ . '/helper.php';
 
 $moduleHelper = new ModMailformHelper($module, $params);
+$action = $moduleHelper->getPost('action', '');
 
-$lang = JFactory::getLanguage();
-$lang->load('plg_captcha_recaptcha', JPATH_ADMINISTRATOR, JFactory::getDocument()->language, true);
-$display = $moduleHelper->checkForm();
-
-switch ($display) {
-	case ModMailformHelper::SEND_JSON:
-		$json = $moduleHelper->getJsonData();
-		echo $json;
+switch ($action) {
+	
+	case ModMailformHelper::ACTION_SEND_MAIL:
+		$form_state = $moduleHelper->checkForm();
+		
+		if ($form_state == ModMailformHelper::SEND_JSON) {
+			echo $moduleHelper->getJsonData();
+		} else {
+			return;
+		}
+		break;
+		
+	case ModMailformHelper::ACTION_CAPTCHA:
+		echo $moduleHelper->getCaptcha();
 		break;
 		
 	default:
