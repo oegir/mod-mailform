@@ -223,6 +223,28 @@ class ModMailformHelper {
 	}
 	
 	/**
+	 * Возвращает html-код каптчи
+	 *
+	 * @return string
+	 */
+	private static function getCaptcha() {
+		$lang = JFactory::getLanguage();
+		$lang->load('plg_captcha_recaptcha', JPATH_ADMINISTRATOR, JFactory::getDocument()->language, true);
+	
+		JPluginHelper::importPlugin ( 'captcha' );
+	
+		$dispatcher = JEventDispatcher::getInstance ();
+		$dispatcher->trigger ( 'onInit', 'modMailformCaptcha_' . $this->module->id );
+	
+		$captcha_html = $moduleHelper->getDispatcher ()->trigger ( 'onDisplay', array (
+				'CUF_CAPTCHA',
+				'modMailformCaptcha_' . $module->id,
+				null
+		) );
+		return $captcha_html [0];
+	}
+	
+	/**
 	 * Подготавливает текст отправляемого сообщения
 	 *
 	 * @return string
@@ -406,18 +428,31 @@ class ModMailformHelper {
 	 */
 	public static function getAjax() {
 		$joomla_app = JFactory::getApplication ( 'site' );
-		$module_title = htmlspecialchars ( $joomla_app->input->post->get ( 'title', '', 'string' ) );
+		$action = $joomla_app->input->get ( 'action', '', 'string' );
 		
-		if ($module_title != '') {
-			$module = JModuleHelper::getModule ( 'mod_mailform', $module_title );
-			
-			if ($module->id > 0) {
-				echo JModuleHelper::renderModule ( $module );
-			} else {
+		switch ($action) {
+		
+			case ModMailformHelper::ACTION_SEND_MAIL:
+				$module_title = htmlspecialchars ( $joomla_app->input->post->get ( 'title', '', 'string' ) );
+				
+				if ($module_title != '') {
+					$module = JModuleHelper::getModule ( 'mod_mailform', $module_title );
+					
+					if ($module->id > 0) {
+						echo JModuleHelper::renderModule ( $module );
+					} else {
+						echo (JText::_ ( 'MOD_MAILFORM_MODULE_NOT_FOUND' ));
+						return;
+					}
+				}
+		
+			case ModMailformHelper::ACTION_CAPTCHA:
+				echo $moduleHelper->getCaptcha();
+				break;
+		
+			default:
 				echo (JText::_ ( 'MOD_MAILFORM_MODULE_NOT_FOUND' ));
-			}
-		} else {
-			echo (JText::_ ( 'MOD_MAILFORM_MODULE_NOT_FOUND' ));
+				return;
 		}
 	}
 	
@@ -575,24 +610,7 @@ class ModMailformHelper {
 		return $data->__toString ();
 	}
 	
-	/**
-	 * Возвращает html-код каптчи
-	 *
-	 * @return string
-	 */
-	public function getCaptcha() {
-		$lang = JFactory::getLanguage();
-		$lang->load('plg_captcha_recaptcha', JPATH_ADMINISTRATOR, JFactory::getDocument()->language, true);
-		
-		JPluginHelper::importPlugin ( 'captcha' );
-		$this->getDispatcher ()->trigger ( 'onInit', 'modMailformCaptcha_' . $this->module->id );
-		$captcha_html = $moduleHelper->getDispatcher ()->trigger ( 'onDisplay', array (
-				'CUF_CAPTCHA',
-				'modMailformCaptcha_' . $module->id,
-				null 
-		) );
-		return $captcha_html [0] . '<br />';
-	}
+	
 	
 	/**
 	 * Возвращает значение из входящих POST-данных

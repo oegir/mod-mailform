@@ -187,7 +187,9 @@ ModMailform.getCaptcha = function(moduleId, baseUri, moduleName) {
 			.ajax({
 				type : "POST",
 				url : baseUri + "index.php?option=com_ajax&module="
-						+ moduleName + "&format=raw&action=captcha",
+						+ moduleName + "&format=raw",
+				data : {action: "captcha"},
+				dataType : "text",
 				timeout : 30000,
 				async : true,
 
