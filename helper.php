@@ -228,19 +228,23 @@ class ModMailformHelper {
 	 * @return string
 	 */
 	private static function getCaptcha() {
+		$document =JFactory::getDocument();
 		$lang = JFactory::getLanguage();
-		$lang->load('plg_captcha_recaptcha', JPATH_ADMINISTRATOR, JFactory::getDocument()->language, true);
+		$lang->load('plg_captcha_recaptcha', JPATH_ADMINISTRATOR, $document->language, true);
 	
 		JPluginHelper::importPlugin ( 'captcha' );
 	
 		$dispatcher = JEventDispatcher::getInstance ();
-		$dispatcher->trigger ( 'onInit', 'modMailformCaptcha_' . $this->module->id );
+		$dispatcher->trigger ( 'onInit', 'modMailformCaptcha' );
 	
-		$captcha_html = $moduleHelper->getDispatcher ()->trigger ( 'onDisplay', array (
+		$captcha_html = $dispatcher->trigger ( 'onDisplay', array (
 				'CUF_CAPTCHA',
-				'modMailformCaptcha_' . $module->id,
+				'modMailformCaptcha',
 				null
 		) );
+		
+		$a = 0;
+		
 		return $captcha_html [0];
 	}
 	
@@ -447,7 +451,7 @@ class ModMailformHelper {
 				}
 		
 			case ModMailformHelper::ACTION_CAPTCHA:
-				echo $moduleHelper->getCaptcha();
+				echo ModMailformHelper::getCaptcha();
 				break;
 		
 			default:

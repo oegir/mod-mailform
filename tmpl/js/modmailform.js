@@ -201,6 +201,7 @@ ModMailform.getCaptcha = function(moduleId, baseUri, moduleName) {
 				success : function(msg) {
 //					alert(jQuery("#" + ModMailform.FORM_CAPTCHA_HOLDER + "_" +moduleId ).text());
 					alert(msg);
+					jQuery("#" + ModMailform.FORM_CAPTCHA_HOLDER + "_" + moduleId).html(msg);
 				}
 			});
 }
