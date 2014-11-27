@@ -43,13 +43,9 @@ defined('_JEXEC') or die;
 					<textarea cols="50" rows="10" name="text" id="modMailformField_text" class="inputbox input-xlarge <?php echo $moduleHelper->getFieldClasses('text'); ?>"></textarea>
 				</div>
 			</div>
-			<div id="modMailformCaptchaHolder_<?php echo $module->id ?>">123</div>
-<?php if ($params->get('captcha')) {
-	JPluginHelper::importPlugin ( 'captcha' );
-	$moduleHelper->getDispatcher()->trigger('onInit', 'modMailformCaptcha_' . $module->id);
-	$captcha_html =  $moduleHelper->getDispatcher()->trigger('onDisplay', array('CUF_CAPTCHA','modMailformCaptcha_' . $module->id, null) );
-	echo $captcha_html[0].'<br />';
-} ?>
+<?php if ($params->get('captcha')) : ?>
+			<div id="modMailformCaptchaHolder_<?php echo $module->id ?>" class="modMailformCaptchaHolder"></div>
+<?php endif; ?>
 			<div class="control-group">
 				<label id="modMailformLabel_email_copy" class="control-label" for="modMailformField_email_copy"><?php echo $moduleHelper->getFiledLabel('email_copy'); ?></label>
 				<div class="controls">
@@ -65,3 +61,4 @@ defined('_JEXEC') or die;
 	<input type="hidden" name="title" value="<?php echo $module->title ?>" />
 	<?php // echo JHTML::_( 'form.token' ); ?>
 </form>
+<!-- <iframe src="<?php echo JURI::base() ?>index.php?option=com_ajax&module=<?php echo $module->name ?>&format=raw&action=captcha"></iframe> -->

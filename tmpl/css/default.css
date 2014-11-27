@@ -10,3 +10,11 @@
 .modMailform-final {
 	display: none;
 }
+.modMailformCaptchaHolder {
+	text-align: center;
+}
+.modMailformCaptchaHolder iframe {
+	display: inline-block;
+	width: 450px;
+	height: 120px;
+}

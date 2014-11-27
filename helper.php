@@ -21,8 +21,9 @@ class ModMailformHelper {
 	const SUMMARY_SUCCES = 3;
 	const SUMMARY_FIELDS_ERROR = 4;
 	const SUMMARY_SEND_ERROR = 5;
-	const ACTION_CAPTCHA = "captcha";
-	const ACTION_SEND_MAIL = "sendmail";
+	const ACTION_CAPTCHA = 'captcha';
+	const ACTION_SEND_MAIL = 'sendmail';
+	const CAPTCHA_BLOCK_ID = 'modMailformCaptcha';
 	
 	/**
 	 * Объект текущего модуля
@@ -182,7 +183,7 @@ class ModMailformHelper {
 					}
 					if (! $captcha_is_valid) {
 						$field_ok = false;
-						$this->application->enqueueMessage ( JText::_ ( 'MOD_MAILFORM_CAPTHCA_ISINVALID' ) . ': ' . $field_data ['field_label'], 'error' );
+						$this->application->enqueueMessage ( JText::_ ( 'MOD_MAILFORM_FIELD_INVALID' ) . ': ' . $field_data ['field_label'], 'error' );
 					}
 					break;
 			}
@@ -243,9 +244,31 @@ class ModMailformHelper {
 				null
 		) );
 		
-		$a = 0;
+		$head = '<head>' . PHP_EOL;
 		
-		return $captcha_html [0];
+		foreach ($document->_scripts as $link => $data) {
+			$head .= '<script src="' . $link .'" type="' . $data['mime'] . '"></script>' . PHP_EOL;
+		}
+		
+		foreach ($document->_script as $type => $script) {
+			$head .= '<script type="' . $type . '">' . PHP_EOL;
+			$head .= $script . PHP_EOL;
+			$head .= '</script>' . PHP_EOL;
+		}
+		$head .= '</head>';
+		
+		$body = '<body>' .PHP_EOL;
+		$body .= '<div id="' . self::CAPTCHA_BLOCK_ID . '">' . PHP_EOL;
+		$body .= $captcha_html [0] . PHP_EOL;
+		$body .= '</div>' . PHP_EOL;
+		$body .= '</body>';
+		
+		$html = '<html>' . PHP_EOL;
+		$html .= $head . PHP_EOL;
+		$html .= $body . PHP_EOL;
+		$html .= '</html>';
+		
+		return $html;
 	}
 	
 	/**
@@ -341,7 +364,7 @@ class ModMailformHelper {
 		$send = $mailer->Send ();
 		$mailer = null;
 		
-		return ! is_object ( $send );
+		return !($send == false || is_object ( $send ));
 	}
 	
 	/**
@@ -399,7 +422,7 @@ class ModMailformHelper {
 						'type' => 'captcha',
 						'filter' => 'string',
 						'required' => false,
-						'field_label' => '',
+						'field_label' => JText::_ ( 'MOD_MAILFORM_FIELD_CAPTCHA' ),
 						'value' => Null,
 						'default_value' => '' 
 				) 
@@ -449,6 +472,7 @@ class ModMailformHelper {
 						return;
 					}
 				}
+				break;
 		
 			case ModMailformHelper::ACTION_CAPTCHA:
 				echo ModMailformHelper::getCaptcha();
@@ -546,7 +570,9 @@ class ModMailformHelper {
 		$javascript .= '}' . PHP_EOL;
 		$javascript .= 'ModMailform.FORM_WEIRD_STATUS_NEXT = "' . JText::_ ( 'MOD_MAILFORM_WEIRD_STATUS_NEXT' ) . '"' . PHP_EOL;
 		$javascript .= 'ModMailform.SERVER_NOT_RESPONDING = "' . JText::_ ( 'MOD_MAILFORM_SERVER_NOT_RESPONDING' ) . '"' . PHP_EOL;
-		$javascript .= 'ModMailform.CAPTCHA_NOT_RECEIVED = "' . JText::_ ( 'MOD_MAILFORM_CAPTCHA_NOT_RECEIVED' ) . '"';
+		$javascript .= 'ModMailform.FORM_MODULE_NAME = "' . $this->module->name . '"' . PHP_EOL;
+		$javascript .= 'ModMailform.FORM_BASE_URI = "' . JURI::base() . '"' . PHP_EOL;
+		$javascript .= 'ModMailform.FRAME_CAPTCHA_BLOCK_ID = "' . self::CAPTCHA_BLOCK_ID . '"';
 		return $javascript;
 	}
 	

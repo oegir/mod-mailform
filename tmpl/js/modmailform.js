@@ -17,6 +17,8 @@ ModMailform.FORM_REVERT_BUTTON = "modMailformRevert";
 ModMailform.FORM_CAPTCHA_HOLDER = "modMailformCaptchaHolder";
 
 ModMailform.spinners = Array();
+ModMailform.data = {};
+
 
 /**
  * Регистрирует обработчики для событий формы
@@ -31,6 +33,7 @@ ModMailform.spinners = Array();
  * @returns void
  */
 ModMailform.addEvents = function(moduleId, baseUri, moduleName) {
+	this.data[moduleId] = {"baseUri" : baseUri, "moduleName" : moduleName}
 	// Отправка формы на сервер
 	jQuery("#" + ModMailform.FORM_ID + "_" + moduleId).on("submit", function() {
 		ModMailform.sendMessage(moduleId, baseUri, moduleName);
@@ -39,7 +42,7 @@ ModMailform.addEvents = function(moduleId, baseUri, moduleName) {
 	jQuery("#" + this.FORM_OPEN_BUTTON_ID + "_" + moduleId).on(
 			"click",
 			function() {
-				ModMailform.getCaptcha(moduleId, baseUri, moduleName);
+				ModMailform.loadCaptcha(moduleId, baseUri, moduleName);
 				// Перенос блока системных сообщений в модальное окно
 				var spacer = jQuery("<div />", {
 					id : ModMailform.FORM_SPACER_ID + "_" + moduleId
@@ -58,7 +61,6 @@ ModMailform.addEvents = function(moduleId, baseUri, moduleName) {
 				ModMailform.hideButtons(moduleId);
 				ModMailform.hideSpinner(moduleId);
 				jQuery("#" + ModMailform.FORM_ID + "_" + moduleId).trigger('reset');
-				ModMailform.showForm(moduleId);
 				jQuery("#" + ModMailform.FORM_SPACER_ID + "_" + moduleId)
 						.replaceWith(jQuery("#system-message-container"));
 			});
@@ -101,6 +103,7 @@ ModMailform.addEvents = function(moduleId, baseUri, moduleName) {
 ModMailform.sendMessage = function(moduleId, baseUri, moduleName) {
 	Joomla.removeMessages();
 	ModMailform.hideForm(moduleId);
+	ModMailform.importCaptcha(moduleId);
 	ModMailform.showSpinner(moduleId);
 
 	var form_data = jQuery("#" + ModMailform.FORM_ID + "_" + moduleId)
@@ -170,40 +173,31 @@ ModMailform.sendMessage = function(moduleId, baseUri, moduleName) {
 
 
 /**
- * Запрашивает код captcha для размещения его на форме
+ * Загружает код captcha и размещает его в окне формы
  * 
  * @param moduleId
  *            int - id текущего модуля
- * @param baseUri
- *            String - URL сайта
- * @param moduleName
- *            String - идентификатор модуля
  * 
  * @returns void
  */
-ModMailform.getCaptcha = function(moduleId, baseUri, moduleName) {
-	
-	jQuery
-			.ajax({
-				type : "POST",
-				url : baseUri + "index.php?option=com_ajax&module="
-						+ moduleName + "&format=raw",
-				data : {action: "captcha"},
-				dataType : "text",
-				timeout : 30000,
-				async : true,
+ModMailform.loadCaptcha = function(moduleId) {
+	var iFrame = jQuery("<iframe/>", {
+	      src: ModMailform.FORM_BASE_URI + "index.php?option=com_ajax&module=" + ModMailform.FORM_MODULE_NAME + "&format=raw&action=captcha"
+	});
+	jQuery("#" + this.FORM_CAPTCHA_HOLDER + "_" + moduleId).html(iFrame);
+}
 
-				error : function(xhr) {
-					Joomla.renderMessages({ error : { 0 : ModMailform.CAPTCHA_NOT_RECEIVED } });
-					console.log(ModMailform.CAPTCHA_NOT_RECEIVED + ": " + xhr.status + ' ' + xhr.statusText);
-				},
-
-				success : function(msg) {
-//					alert(jQuery("#" + ModMailform.FORM_CAPTCHA_HOLDER + "_" +moduleId ).text());
-					alert(msg);
-					jQuery("#" + ModMailform.FORM_CAPTCHA_HOLDER + "_" + moduleId).html(msg);
-				}
-			});
+/**
+ * Переносит данные каптчи из iframe в отправляемую форму
+ * 
+ * @param moduleId
+ *            int - id текущего модуля
+ * 
+ * @returns void
+ */
+ModMailform.importCaptcha = function(moduleId) {
+	var captcha_content = jQuery("#" + this.FORM_CAPTCHA_HOLDER + "_" + moduleId + " iframe").contents().find("#" + this.FRAME_CAPTCHA_BLOCK_ID);
+	jQuery("#" + this.FORM_CAPTCHA_HOLDER + "_" + moduleId).append(captcha_content);
 }
 
 /**
@@ -229,6 +223,7 @@ ModMailform.hideForm = function(moduleId) {
  * @returns void
  */
 ModMailform.showForm = function(moduleId) {
+	this.loadCaptcha(moduleId);
 	jQuery("#" + ModMailform.FORM_ID + "_" + moduleId).css({
 		display : 'block'
 	});
