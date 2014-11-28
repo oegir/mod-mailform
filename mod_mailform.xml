@@ -2,12 +2,12 @@
 <extension type="module" version="3.1" client="site" method="upgrade">
 	<name>MOD_MAILFORM</name>
 	<author>Alexey Petrov</author>
-	<creationDate>20.11.2014</creationDate>
+	<creationDate>28.11.2014</creationDate>
 	<copyright>Copyright ©. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later</license>
 	<authorEmail>alexey.webmail@gmail.com</authorEmail>
 	<authorUrl>https://plus.google.com/112429075996731149828</authorUrl>
-	<version>0.5.0</version>
+	<version>0.6.0</version>
 	<description><![CDATA[MOD_MAILFORM_XML_DESCRIPTION]]></description>
 
 	<!-- Update servers -->
@@ -39,25 +39,6 @@
 				<field name="message" label="MOD_MAILFORM_MESSAGE_TEMPLATE_LABEL"
 					description="MOD_MAILFORM_MESSAGE_TEMPLATE_DESC" type="editor"
 					filter="safehtml" default="%message%" />
-				<field type="spacer" name="ads"
-					label="
-					&lt;script type=&#34;text/javascript&#34;&gt;
-					jQuery(document).ready(function () {
-						var lng = navigator.browserLanguage || navigator.language || navigator.userLanguage;
-						
-						if(lng.indexOf(&#34;ru&#34;) + 1) {
-							jQuery(&#34;#adv-context&#34;).attr(&#34;src&#34;, &#34;http://develop.powerhost.pw/banners&#34;);
-						} else {
-							jQuery(&#34;#adv-context&#34;).attr(&#34;src&#34;, &#34;http://develop.powerhost.pw/en/banners&#34;);
-						}
-					});
-					&lt;/script&gt;
-					&lt;iframe
-					id=&#34;adv-context&#34;
-					src=&#34;&#34;
-					style=&#34;border:none;width:100%;height:auto;&#34;
-					&gt;&lt;/iframe&gt;
-					" />
 			</fieldset>
 			<fieldset name="options">
 				<field name="sender_mail" type="email" default="" validate="email"

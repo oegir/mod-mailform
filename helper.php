@@ -16,6 +16,7 @@ defined ( '_JEXEC' ) or die ();
  * @since 3.x
  */
 class ModMailformHelper {
+	const NO_VALUE = 'no value';
 	const DISPLAY_EMPTY_FORM = 1;
 	const SEND_JSON = 2;
 	const SUMMARY_SUCCES = 3;

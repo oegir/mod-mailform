@@ -42,7 +42,7 @@ ModMailform.addEvents = function(moduleId, baseUri, moduleName) {
 	jQuery("#" + this.FORM_OPEN_BUTTON_ID + "_" + moduleId).on(
 			"click",
 			function() {
-				ModMailform.loadCaptcha(moduleId, baseUri, moduleName);
+				ModMailform.showForm(moduleId);
 				// Перенос блока системных сообщений в модальное окно
 				var spacer = jQuery("<div />", {
 					id : ModMailform.FORM_SPACER_ID + "_" + moduleId
