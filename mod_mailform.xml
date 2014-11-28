@@ -84,6 +84,12 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 				</field>
+				<field name="show_joomla_send_error" type="radio" default="0"
+          label="MOD_MAILFORM_SHOW_JOOMLA_SEND_ERROR_LABEL" description="MOD_MAILFORM_SHOW_JOOMLA_SEND_ERROR_DESC"
+          class="btn-group btn-group-yesno">
+          <option value="0">JNO</option>
+          <option value="1">JYES</option>
+        </field>
 			</fieldset>
 		</fields>
 	</config>

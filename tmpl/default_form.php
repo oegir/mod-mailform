@@ -54,11 +54,9 @@ defined('_JEXEC') or die;
 					</label>
 				</div>
 			</div>
-			<button class="btn btn-primary validate" type="submit"><i class="icon-envelope"></i> <?php echo JText::_('COM_CONTACT_CONTACT_SEND'); ?></button>
+			<button class="btn btn-primary validate" type="submit"><i class="icon-envelope"></i> <?php echo JText::_('MOD_MAILFORM_BUTTON_SEND'); ?></button>
 		</fieldset>
 	</div>
 	<input type="hidden" name="action" value="sendmail" />
 	<input type="hidden" name="title" value="<?php echo $module->title ?>" />
-	<?php // echo JHTML::_( 'form.token' ); ?>
 </form>
-<!-- <iframe src="<?php echo JURI::base() ?>index.php?option=com_ajax&module=<?php echo $module->name ?>&format=raw&action=captcha"></iframe> -->

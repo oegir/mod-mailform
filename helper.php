@@ -229,35 +229,35 @@ class ModMailformHelper {
 	 * @return string
 	 */
 	private static function getCaptcha() {
-		$document =JFactory::getDocument();
-		$lang = JFactory::getLanguage();
-		$lang->load('plg_captcha_recaptcha', JPATH_ADMINISTRATOR, $document->language, true);
-	
+		$document = JFactory::getDocument ();
+		$lang = JFactory::getLanguage ();
+		$lang->load ( 'plg_captcha_recaptcha', JPATH_ADMINISTRATOR, $document->language, true );
+		
 		JPluginHelper::importPlugin ( 'captcha' );
-	
+		
 		$dispatcher = JEventDispatcher::getInstance ();
 		$dispatcher->trigger ( 'onInit', 'modMailformCaptcha' );
-	
+		
 		$captcha_html = $dispatcher->trigger ( 'onDisplay', array (
 				'CUF_CAPTCHA',
 				'modMailformCaptcha',
-				null
+				null 
 		) );
 		
 		$head = '<head>' . PHP_EOL;
 		
-		foreach ($document->_scripts as $link => $data) {
-			$head .= '<script src="' . $link .'" type="' . $data['mime'] . '"></script>' . PHP_EOL;
+		foreach ( $document->_scripts as $link => $data ) {
+			$head .= '<script src="' . $link . '" type="' . $data ['mime'] . '"></script>' . PHP_EOL;
 		}
 		
-		foreach ($document->_script as $type => $script) {
+		foreach ( $document->_script as $type => $script ) {
 			$head .= '<script type="' . $type . '">' . PHP_EOL;
 			$head .= $script . PHP_EOL;
 			$head .= '</script>' . PHP_EOL;
 		}
 		$head .= '</head>';
 		
-		$body = '<body>' .PHP_EOL;
+		$body = '<body>' . PHP_EOL;
 		$body .= '<div id="' . self::CAPTCHA_BLOCK_ID . '">' . PHP_EOL;
 		$body .= $captcha_html [0] . PHP_EOL;
 		$body .= '</div>' . PHP_EOL;
@@ -364,7 +364,7 @@ class ModMailformHelper {
 		$send = $mailer->Send ();
 		$mailer = null;
 		
-		return !($send == false || is_object ( $send ));
+		return $send === true;
 	}
 	
 	/**
@@ -458,8 +458,8 @@ class ModMailformHelper {
 		$action = $joomla_app->input->get ( 'action', '', 'string' );
 		
 		switch ($action) {
-		
-			case ModMailformHelper::ACTION_SEND_MAIL:
+			
+			case ModMailformHelper::ACTION_SEND_MAIL :
 				$module_title = htmlspecialchars ( $joomla_app->input->post->get ( 'title', '', 'string' ) );
 				
 				if ($module_title != '') {
@@ -473,12 +473,12 @@ class ModMailformHelper {
 					}
 				}
 				break;
-		
-			case ModMailformHelper::ACTION_CAPTCHA:
-				echo ModMailformHelper::getCaptcha();
+			
+			case ModMailformHelper::ACTION_CAPTCHA :
+				echo ModMailformHelper::getCaptcha ();
 				break;
-		
-			default:
+			
+			default :
 				echo (JText::_ ( 'MOD_MAILFORM_MODULE_NOT_FOUND' ));
 				return;
 		}
@@ -571,7 +571,7 @@ class ModMailformHelper {
 		$javascript .= 'ModMailform.FORM_WEIRD_STATUS_NEXT = "' . JText::_ ( 'MOD_MAILFORM_WEIRD_STATUS_NEXT' ) . '"' . PHP_EOL;
 		$javascript .= 'ModMailform.SERVER_NOT_RESPONDING = "' . JText::_ ( 'MOD_MAILFORM_SERVER_NOT_RESPONDING' ) . '"' . PHP_EOL;
 		$javascript .= 'ModMailform.FORM_MODULE_NAME = "' . $this->module->name . '"' . PHP_EOL;
-		$javascript .= 'ModMailform.FORM_BASE_URI = "' . JURI::base() . '"' . PHP_EOL;
+		$javascript .= 'ModMailform.FORM_BASE_URI = "' . JURI::base () . '"' . PHP_EOL;
 		$javascript .= 'ModMailform.FRAME_CAPTCHA_BLOCK_ID = "' . self::CAPTCHA_BLOCK_ID . '"';
 		return $javascript;
 	}
@@ -629,7 +629,7 @@ class ModMailformHelper {
 		$summary = ! ($this->formData ['status'] == self::SUMMARY_SUCCES);
 		$data = new JResponseJson ( $this->formData ['errorFields'], $this->formData ['status'], $summary );
 		
-		if ($this->formData ['status'] == self::SUMMARY_SEND_ERROR) {
+		if (($this->formData ['status'] == self::SUMMARY_SEND_ERROR) && (! $this->params->get ( 'show_joomla_send_error', false ))) {
 			$data->messages = array (
 					'error' => array (
 							JText::_ ( 'MOD_MAILFORM_SEND_MAIL_SERVER_ERR0R' ) 
@@ -640,20 +640,17 @@ class ModMailformHelper {
 		return $data->__toString ();
 	}
 	
-	
-	
 	/**
 	 * Возвращает значение из входящих POST-данных
-	 * 
+	 *
 	 * @param sting $name
 	 *        	имя поля
 	 * @param mixed $default
 	 *        	значение по умолчанию
 	 * @param string $filter
-	 * 					фильтр, применяемый к значению
-	 *
-	 * @return mixed
-	 * 					Отфильтрованное значение
+	 *        	фильтр, применяемый к значению
+	 *        	
+	 * @return mixed Отфильтрованное значение
 	 */
 	public function getPost($name, $default = Null, $filter = 'cmd') {
 		return $this->post->get ( $name, $default, $filter );
