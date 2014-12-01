@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="module" version="3.1" client="site" method="upgrade">
+<extension type="module" version="3.3" client="site" method="upgrade">
 	<name>MOD_MAILFORM</name>
 	<author>Alexey Petrov</author>
 	<creationDate>28.11.2014</creationDate>
 	<copyright>Copyright ©. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later</license>
 	<authorEmail>alexey.webmail@gmail.com</authorEmail>
-	<authorUrl>https://plus.google.com/112429075996731149828</authorUrl>
-	<version>0.6.0</version>
+	<authorUrl>https://plus.google.com/+DevwebprogBlogspot/</authorUrl>
+	<version>0.6.1</version>
 	<description><![CDATA[MOD_MAILFORM_XML_DESCRIPTION]]></description>
 
-	<!-- Update servers -->
-	<!-- <updateservers> -->
-	<!-- <server type="extension" priority="1" name="Horizontal Menu">http://www.powerhost.pw/projects/mod_mailform/mailform-upgrade.xml</server> -->
-	<!-- </updateservers> -->
+  <!-- 	Update servers -->
+	<updateservers>
+	 <server type="extension" priority="1" name="Horizontal Menu">http://develop.powerhost.pw/images/files/mod_mailform/v.0.6.x/mailform-upgrade.xml</server>
+	</updateservers>
 
 	<files>
 		<filename module="mod_mailform">mod_mailform.php</filename>
@@ -65,6 +65,12 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 				</field>
+				<field name="show_copy_box" type="radio" default="0"
+          label="MOD_MAILFORM_SHOW_COPY_BOX_LABEL" description="MOD_MAILFORM_SHOW_COPY_BOX_DESC"
+          class="btn-group btn-group-yesno">
+          <option value="0">JNO</option>
+          <option value="1">JYES</option>
+        </field>
 				<field name="show_joomla_send_error" type="radio" default="0"
           label="MOD_MAILFORM_SHOW_JOOMLA_SEND_ERROR_LABEL" description="MOD_MAILFORM_SHOW_JOOMLA_SEND_ERROR_DESC"
           class="btn-group btn-group-yesno">
