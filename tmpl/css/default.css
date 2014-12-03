@@ -3,7 +3,7 @@
 .modMailform-clr {
 	clear: both;
 }
-.modMailform-spinner {
+.modMailform-loadAnimation {
 	text-align: center;
 	display: none;
 }

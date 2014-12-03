@@ -22,12 +22,7 @@ if (! strpos ( $head_data ['script'] ['text/javascript'], $constants_script )) {
 	$doc->addScriptDeclaration ( $constants_script );
 }
 $doc->addScriptDeclaration ( $moduleHelper->getSettingsScript() );
-$excanvas = '<!--[if lte IE 9]> <script src="' . JFactory::getURI ()->base () . 'modules/mod_mailform/tmpl/js/excanvas.js" type="text/javascript"></script> <![endif]-->';
-if (! in_array ( $excanvas, $head_data ['custom'] )) {
-	$doc->addCustomTag ( $excanvas );
-}
 
-$doc->addScript ( 'modules/mod_mailform/tmpl/js/spinners.min.js', 'text/javascript' );
 $headerTag      = htmlspecialchars($params->get('header_tag', 'h3'));
 ?>
 <a href="#modMailformWindow_<?php echo $module->id ?>" role="button"
@@ -45,8 +40,8 @@ $headerTag      = htmlspecialchars($params->get('header_tag', 'h3'));
 	<div class="modal-body"
 		id="modMailformModalBody_<?php echo $module->id ?>">
 			<?php require JModuleHelper::getLayoutPath('mod_mailform', $params->get('layout', 'default').'_form'); ?>
-			<div class="modMailform-spinner"
-			id="modMailformSpinner_<?php echo $module->id ?>"></div>
+			<div class="modMailform-loadAnimation"
+			id="modMailformloadAnimation_<?php echo $module->id ?>"></div>
 		<div class="modMailform-final"
 			id="modMailformFinal_<?php echo $module->id ?>">
 			<button type="button" class="btn btn-inverse"

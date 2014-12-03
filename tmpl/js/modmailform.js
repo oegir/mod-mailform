@@ -2,7 +2,7 @@
  * 
  */
 
-var ModMailform = {}
+var ModMailform = {};
 
 ModMailform.FORM_ID = "modMailform"; // префикс id тега формы
 ModMailform.FORM_WINDOW = "modMailformWindow";
@@ -11,13 +11,26 @@ ModMailform.FORM_SPACER_ID = "modMailformSpacer";
 ModMailform.FORM_MODAL_BODY_ID = "modMailformModalBody";
 ModMailform.FORM_LABEL_PREFIX = "modMailformLabel";
 ModMailform.FORM_FIELD_PREFIX = "modMailformField";
-ModMailform.FORM_SPINNER = "modMailformSpinner";
+ModMailform.FORM_LOAD_ANIMATION = "modMailformloadAnimation";
 ModMailform.FORM_FINAL_BUTTONS = "modMailformFinal";
 ModMailform.FORM_REVERT_BUTTON = "modMailformRevert";
 ModMailform.FORM_CAPTCHA_HOLDER = "modMailformCaptchaHolder";
 
-ModMailform.spinners = Array();
 ModMailform.data = {};
+
+ModMailform.loadAnimation = {
+		cSpeed: 9,
+		cWidth: 220,
+		cHeight: 220,
+		cTotalFrames: 12,
+		cFrameWidth: 220,
+		imageName: "sprites.png",
+		cImageTimeout: false,
+		cIndex: 0,
+		cXpos: 0,
+		cPreloaderTimeout: false,
+		SECONDS_BETWEEN_FRAMES: 0
+};
 
 
 /**
@@ -64,20 +77,11 @@ ModMailform.addEvents = function(moduleId, baseUri, moduleName) {
 				jQuery("#" + ModMailform.FORM_SPACER_ID + "_" + moduleId)
 						.replaceWith(jQuery("#system-message-container"));
 			});
-	// Создание спиннера
-	var spinner_settings = {
-		radius : 70,
-		height : 30,
-		width : 4,
-		dashes : 25,
-		opacity : 1,
-		padding : 0,
-		rotation : 600,
-		color : '#000000'
-	}
-	var spinner = Spinners.create(jQuery("#" + ModMailform.FORM_SPINNER + "_"
-			+ moduleId), spinner_settings);
-	ModMailform.spinners[ModMailform.FORM_SPINNER + "_" + moduleId] = spinner;
+	// Настройка индикатора загрузки
+	this.loadAnimation.imageUrl = this.data[moduleId].baseUri + "modules/mod_" + this.data[moduleId].moduleName + "/tmpl/img/" + this.loadAnimation.imageName;
+	var preImg = jQuery("<img/>", {
+		src: ModMailform.loadAnimation.imageUrl
+	});
 	// Возврат на экран формы
 	jQuery("#" + this.FORM_REVERT_BUTTON + "_" + moduleId).on("click",
 			function() {
@@ -104,7 +108,7 @@ ModMailform.sendMessage = function(moduleId, baseUri, moduleName) {
 	Joomla.removeMessages();
 	ModMailform.hideForm(moduleId);
 	ModMailform.importCaptcha(moduleId);
-	ModMailform.showSpinner(moduleId);
+	ModMailform.showLoadAnimation(moduleId);
 
 	var form_data = jQuery("#" + ModMailform.FORM_ID + "_" + moduleId)
 			.serialize();
@@ -265,13 +269,28 @@ ModMailform.showButtons = function(moduleId) {
  * 
  * @returns Element
  */
-ModMailform.showSpinner = function(moduleId) {
-	var spinner_name = this.FORM_SPINNER + "_" + moduleId;
-
-	this.spinners[spinner_name].play();
-	jQuery("#" + spinner_name).css({
-		display : 'block'
+ModMailform.showLoadAnimation = function(moduleId) {
+	var animationBlock = jQuery("<div/>").css({
+		"background-image": "url(" + ModMailform.loadAnimation.imageUrl + ")",
+		height: ModMailform.loadAnimation.cHeight,
+		width: ModMailform.loadAnimation.cWidth
 	});
+	var animationHolder = jQuery("#" + ModMailform.FORM_LOAD_ANIMATION + "_" + moduleId);
+	animationHolder.css({display : "inline-block"});
+	animationHolder.append(animationBlock);
+//	
+//	//FPS = Math.round(100/(maxSpeed+2-speed));
+//	FPS = Math.round(100/cSpeed);
+//	SECONDS_BETWEEN_FRAMES = 1 / FPS;
+//	
+//	cPreloaderTimeout=setTimeout('continueAnimation()', SECONDS_BETWEEN_FRAMES/1000);
+//	
+//	var spinner_name = this.FORM_LOAD_ANIMATION + "_" + moduleId;
+//
+//	this.spinners[spinner_name].play();
+//	jQuery("#" + spinner_name).css({
+//		display : 'block'
+//	});
 }
 
 /**
@@ -283,7 +302,7 @@ ModMailform.showSpinner = function(moduleId) {
  * @returns Element
  */
 ModMailform.hideSpinner = function(moduleId) {
-	var spinner_name = this.FORM_SPINNER + "_" + moduleId;
+	var spinner_name = this.FORM_LOAD_ANIMATION + "_" + moduleId;
 
 	this.spinners[spinner_name].stop();
 	jQuery("#" + spinner_name).css({
