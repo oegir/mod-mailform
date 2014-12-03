@@ -182,7 +182,7 @@ ModMailform.sendMessage = function(moduleId, baseUri, moduleName) {
  */
 ModMailform.loadCaptcha = function(moduleId) {
 	var iFrame = jQuery("<iframe/>", {
-	      src: ModMailform.FORM_BASE_URI + "index.php?option=com_ajax&module=" + ModMailform.FORM_MODULE_NAME + "&format=raw&action=captcha"
+	      src: ModMailform.FORM_BASE_URI + "index.php?option=com_ajax&module=" + ModMailform.FORM_MODULE_NAME + "&format=raw&action=captcha&Itemid=" + ModMailform.FRAME_CAPTCHA_MENU_ID
 	});
 	jQuery("#" + this.FORM_CAPTCHA_HOLDER + "_" + moduleId).html(iFrame);
 }

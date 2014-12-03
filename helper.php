@@ -569,11 +569,12 @@ class ModMailformHelper {
 		$javascript .= '		0 : "' . JText::_ ( 'MOD_MAILFORM_WEIRD_STATUS' ) . '"' . PHP_EOL;
 		$javascript .= '	}' . PHP_EOL;
 		$javascript .= '}' . PHP_EOL;
-		$javascript .= 'ModMailform.FORM_WEIRD_STATUS_NEXT = "' . JText::_ ( 'MOD_MAILFORM_WEIRD_STATUS_NEXT' ) . '"' . PHP_EOL;
-		$javascript .= 'ModMailform.SERVER_NOT_RESPONDING = "' . JText::_ ( 'MOD_MAILFORM_SERVER_NOT_RESPONDING' ) . '"' . PHP_EOL;
-		$javascript .= 'ModMailform.FORM_MODULE_NAME = "' . $this->module->name . '"' . PHP_EOL;
-		$javascript .= 'ModMailform.FORM_BASE_URI = "' . JURI::base () . '"' . PHP_EOL;
-		$javascript .= 'ModMailform.FRAME_CAPTCHA_BLOCK_ID = "' . self::CAPTCHA_BLOCK_ID . '"';
+		$javascript .= 'ModMailform.FORM_WEIRD_STATUS_NEXT = "' . JText::_ ( 'MOD_MAILFORM_WEIRD_STATUS_NEXT' ) . '";' . PHP_EOL;
+		$javascript .= 'ModMailform.SERVER_NOT_RESPONDING = "' . JText::_ ( 'MOD_MAILFORM_SERVER_NOT_RESPONDING' ) . '";' . PHP_EOL;
+		$javascript .= 'ModMailform.FORM_MODULE_NAME = "' . $this->module->name . '";' . PHP_EOL;
+		$javascript .= 'ModMailform.FORM_BASE_URI = "' . JURI::base () . '";' . PHP_EOL;
+		$javascript .= 'ModMailform.FRAME_CAPTCHA_BLOCK_ID = "' . self::CAPTCHA_BLOCK_ID . '";' . PHP_EOL;
+		$javascript .= 'ModMailform.FRAME_CAPTCHA_MENU_ID = "' . $this->application->getMenu()->getActive()->id . '";';
 		return $javascript;
 	}
 	
