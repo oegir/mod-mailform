@@ -113,7 +113,7 @@ ModMailform.sendMessage = function(moduleId, baseUri, moduleName) {
 			.ajax({
 				type : "POST",
 				url : baseUri + "index.php?option=com_ajax&module="
-						+ moduleName + "&format=raw",
+						+ moduleName + "&format=raw&Itemid=" + ModMailform.FRAME_CAPTCHA_MENU_ID,
 				data : form_data,
 				dataType : "text",
 				timeout : 30000,
