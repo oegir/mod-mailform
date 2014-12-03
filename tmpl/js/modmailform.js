@@ -42,7 +42,7 @@ ModMailform.addEvents = function(moduleId, baseUri, moduleName) {
 	jQuery("#" + this.FORM_OPEN_BUTTON_ID + "_" + moduleId).on(
 			"click",
 			function() {
-				ModMailform.loadCaptcha(moduleId, baseUri, moduleName);
+				ModMailform.showForm(moduleId);
 				// Перенос блока системных сообщений в модальное окно
 				var spacer = jQuery("<div />", {
 					id : ModMailform.FORM_SPACER_ID + "_" + moduleId
@@ -113,7 +113,7 @@ ModMailform.sendMessage = function(moduleId, baseUri, moduleName) {
 			.ajax({
 				type : "POST",
 				url : baseUri + "index.php?option=com_ajax&module="
-						+ moduleName + "&format=raw",
+						+ moduleName + "&format=raw&Itemid=" + ModMailform.FRAME_CAPTCHA_MENU_ID,
 				data : form_data,
 				dataType : "text",
 				timeout : 30000,
@@ -182,7 +182,7 @@ ModMailform.sendMessage = function(moduleId, baseUri, moduleName) {
  */
 ModMailform.loadCaptcha = function(moduleId) {
 	var iFrame = jQuery("<iframe/>", {
-	      src: ModMailform.FORM_BASE_URI + "index.php?option=com_ajax&module=" + ModMailform.FORM_MODULE_NAME + "&format=raw&action=captcha"
+	      src: ModMailform.FORM_BASE_URI + "index.php?option=com_ajax&module=" + ModMailform.FORM_MODULE_NAME + "&format=raw&action=captcha&Itemid=" + ModMailform.FRAME_CAPTCHA_MENU_ID
 	});
 	jQuery("#" + this.FORM_CAPTCHA_HOLDER + "_" + moduleId).html(iFrame);
 }

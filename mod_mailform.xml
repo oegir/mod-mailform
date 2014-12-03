@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="module" version="3.1" client="site" method="upgrade">
+<extension type="module" version="3.3" client="site" method="upgrade">
 	<name>MOD_MAILFORM</name>
 	<author>Alexey Petrov</author>
-	<creationDate>20.11.2014</creationDate>
+	<creationDate>03.12.2014</creationDate>
 	<copyright>Copyright ©. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later</license>
 	<authorEmail>alexey.webmail@gmail.com</authorEmail>
-	<authorUrl>https://plus.google.com/112429075996731149828</authorUrl>
-	<version>0.5.0</version>
+	<authorUrl>https://plus.google.com/+DevwebprogBlogspot/</authorUrl>
+	<version>0.6.3</version>
 	<description><![CDATA[MOD_MAILFORM_XML_DESCRIPTION]]></description>
 
-	<!-- Update servers -->
-	<!-- <updateservers> -->
-	<!-- <server type="extension" priority="1" name="Horizontal Menu">http://www.powerhost.pw/projects/mod_mailform/mailform-upgrade.xml</server> -->
-	<!-- </updateservers> -->
+  <!-- 	Update servers -->
+	<updateservers>
+	 <server type="extension" priority="1" name="Horizontal Menu">http://develop.powerhost.pw/images/files/mod_mailform/v.0.6.x/mailform-upgrade.xml</server>
+	</updateservers>
 
 	<files>
 		<filename module="mod_mailform">mod_mailform.php</filename>
@@ -39,25 +39,6 @@
 				<field name="message" label="MOD_MAILFORM_MESSAGE_TEMPLATE_LABEL"
 					description="MOD_MAILFORM_MESSAGE_TEMPLATE_DESC" type="editor"
 					filter="safehtml" default="%message%" />
-				<field type="spacer" name="ads"
-					label="
-					&lt;script type=&#34;text/javascript&#34;&gt;
-					jQuery(document).ready(function () {
-						var lng = navigator.browserLanguage || navigator.language || navigator.userLanguage;
-						
-						if(lng.indexOf(&#34;ru&#34;) + 1) {
-							jQuery(&#34;#adv-context&#34;).attr(&#34;src&#34;, &#34;http://develop.powerhost.pw/banners&#34;);
-						} else {
-							jQuery(&#34;#adv-context&#34;).attr(&#34;src&#34;, &#34;http://develop.powerhost.pw/en/banners&#34;);
-						}
-					});
-					&lt;/script&gt;
-					&lt;iframe
-					id=&#34;adv-context&#34;
-					src=&#34;&#34;
-					style=&#34;border:none;width:100%;height:auto;&#34;
-					&gt;&lt;/iframe&gt;
-					" />
 			</fieldset>
 			<fieldset name="options">
 				<field name="sender_mail" type="email" default="" validate="email"
@@ -84,6 +65,12 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 				</field>
+				<field name="show_copy_box" type="radio" default="0"
+          label="MOD_MAILFORM_SHOW_COPY_BOX_LABEL" description="MOD_MAILFORM_SHOW_COPY_BOX_DESC"
+          class="btn-group btn-group-yesno">
+          <option value="0">JNO</option>
+          <option value="1">JYES</option>
+        </field>
 				<field name="show_joomla_send_error" type="radio" default="0"
           label="MOD_MAILFORM_SHOW_JOOMLA_SEND_ERROR_LABEL" description="MOD_MAILFORM_SHOW_JOOMLA_SEND_ERROR_DESC"
           class="btn-group btn-group-yesno">

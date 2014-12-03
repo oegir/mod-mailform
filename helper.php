@@ -18,7 +18,7 @@ defined ( '_JEXEC' ) or die ();
 class ModMailformHelper {
 	const DISPLAY_EMPTY_FORM = 1;
 	const SEND_JSON = 2;
-	const SUMMARY_SUCCES = 3;
+	const SUMMARY_SUCCESS = 3;
 	const SUMMARY_FIELDS_ERROR = 4;
 	const SUMMARY_SEND_ERROR = 5;
 	const ACTION_CAPTCHA = 'captcha';
@@ -114,7 +114,7 @@ class ModMailformHelper {
 	 * @var string
 	 */
 	private $formData = array (
-			'status' => self::SUMMARY_SUCCES,
+			'status' => self::SUMMARY_SUCCESS,
 			'errorFields' => array () 
 	);
 	
@@ -189,7 +189,7 @@ class ModMailformHelper {
 			}
 			if (! $field_ok) {
 				$form_ok = false;
-				$this->formData ['status'] = $form_ok ? self::SUMMARY_SUCCES : self::SUMMARY_FIELDS_ERROR;
+				$this->formData ['status'] = $form_ok ? self::SUMMARY_SUCCESS : self::SUMMARY_FIELDS_ERROR;
 				$this->formData ['errorFields'] [] = $field_name;
 			}
 		}
@@ -326,9 +326,10 @@ class ModMailformHelper {
 		
 		if ($this->form_fields ['email_copy'] ['value']) {
 			// Подготовим данные для отправки пользователю сайта
-			$sender_mail = $this->params->get ( 'sender_mail', self::NO_VALUE );
+			$no_value= 'no value'; // значение, сигнализирующее о том, что поле не было заполнено
+			$sender_mail = $this->params->get ( 'sender_mail', $no_value );
 			
-			if ($sender_mail == self::NO_VALUE) {
+			if ($sender_mail == $no_value) {
 				$sender_mail = $this->params->get ( 'sending_mail', $app->getCfg ( 'mailfrom' ) );
 			}
 			
@@ -560,7 +561,7 @@ class ModMailformHelper {
 	 * @return string
 	 */
 	public function getConstantsScript() {
-		$javascript .= 'ModMailform.FORM_RESULT_SUCCES = ' . self::SUMMARY_SUCCES . ';' . PHP_EOL;
+		$javascript .= 'ModMailform.FORM_RESULT_SUCCES = ' . self::SUMMARY_SUCCESS . ';' . PHP_EOL;
 		$javascript .= 'ModMailform.FORM_RESULT_FIELDS_ERROR = ' . self::SUMMARY_FIELDS_ERROR . ';' . PHP_EOL;
 		$javascript .= 'ModMailform.FORM_RESULT_SEND_ERROR = ' . self::SUMMARY_SEND_ERROR . ';' . PHP_EOL;
 		$javascript .= 'ModMailform.FORM_WEIRD_STATUS = {' . PHP_EOL;
@@ -568,11 +569,12 @@ class ModMailformHelper {
 		$javascript .= '		0 : "' . JText::_ ( 'MOD_MAILFORM_WEIRD_STATUS' ) . '"' . PHP_EOL;
 		$javascript .= '	}' . PHP_EOL;
 		$javascript .= '}' . PHP_EOL;
-		$javascript .= 'ModMailform.FORM_WEIRD_STATUS_NEXT = "' . JText::_ ( 'MOD_MAILFORM_WEIRD_STATUS_NEXT' ) . '"' . PHP_EOL;
-		$javascript .= 'ModMailform.SERVER_NOT_RESPONDING = "' . JText::_ ( 'MOD_MAILFORM_SERVER_NOT_RESPONDING' ) . '"' . PHP_EOL;
-		$javascript .= 'ModMailform.FORM_MODULE_NAME = "' . $this->module->name . '"' . PHP_EOL;
-		$javascript .= 'ModMailform.FORM_BASE_URI = "' . JURI::base () . '"' . PHP_EOL;
-		$javascript .= 'ModMailform.FRAME_CAPTCHA_BLOCK_ID = "' . self::CAPTCHA_BLOCK_ID . '"';
+		$javascript .= 'ModMailform.FORM_WEIRD_STATUS_NEXT = "' . JText::_ ( 'MOD_MAILFORM_WEIRD_STATUS_NEXT' ) . '";' . PHP_EOL;
+		$javascript .= 'ModMailform.SERVER_NOT_RESPONDING = "' . JText::_ ( 'MOD_MAILFORM_SERVER_NOT_RESPONDING' ) . '";' . PHP_EOL;
+		$javascript .= 'ModMailform.FORM_MODULE_NAME = "' . $this->module->name . '";' . PHP_EOL;
+		$javascript .= 'ModMailform.FORM_BASE_URI = "' . JURI::base () . '";' . PHP_EOL;
+		$javascript .= 'ModMailform.FRAME_CAPTCHA_BLOCK_ID = "' . self::CAPTCHA_BLOCK_ID . '";' . PHP_EOL;
+		$javascript .= 'ModMailform.FRAME_CAPTCHA_MENU_ID = "' . $this->application->getMenu()->getActive()->id . '";';
 		return $javascript;
 	}
 	
@@ -612,7 +614,13 @@ class ModMailformHelper {
 			
 			if ($this->testFormFields ()) {
 				$result = $this->sendemail ();
-				$this->formData ['status'] = $result ? self::SUMMARY_SUCCES : self::SUMMARY_SEND_ERROR;
+				// Проверим результат отправки
+				if ($result) {
+					$this->application->enqueueMessage ( JText::_ ( 'MOD_MAILFORM_SEND_OK' ), 'success' );
+					$this->formData ['status'] = self::SUMMARY_SUCCESS;
+				} else {
+					$this->formData ['status'] = self::SUMMARY_SEND_ERROR;
+				}
 			}
 			$formState = self::SEND_JSON;
 		}
@@ -626,7 +634,7 @@ class ModMailformHelper {
 	 * @return string
 	 */
 	public function getJsonData() {
-		$summary = ! ($this->formData ['status'] == self::SUMMARY_SUCCES);
+		$summary = ! ($this->formData ['status'] == self::SUMMARY_SUCCESS);
 		$data = new JResponseJson ( $this->formData ['errorFields'], $this->formData ['status'], $summary );
 		
 		if (($this->formData ['status'] == self::SUMMARY_SEND_ERROR) && (! $this->params->get ( 'show_joomla_send_error', false ))) {

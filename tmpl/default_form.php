@@ -45,7 +45,8 @@ defined('_JEXEC') or die;
 			</div>
 <?php if ($params->get('captcha')) : ?>
 			<div id="modMailformCaptchaHolder_<?php echo $module->id ?>" class="modMailformCaptchaHolder"></div>
-<?php endif; ?>
+<?php endif;
+			if ($params->get('show_copy_box')) : ?>
 			<div class="control-group">
 				<label id="modMailformLabel_email_copy" class="control-label" for="modMailformField_email_copy"><?php echo $moduleHelper->getFiledLabel('email_copy'); ?></label>
 				<div class="controls">
@@ -54,6 +55,7 @@ defined('_JEXEC') or die;
 					</label>
 				</div>
 			</div>
+<?php endif; ?>
 			<button class="btn btn-primary validate" type="submit"><i class="icon-envelope"></i> <?php echo JText::_('MOD_MAILFORM_BUTTON_SEND'); ?></button>
 		</fieldset>
 	</div>
