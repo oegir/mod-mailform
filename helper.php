@@ -1,10 +1,9 @@
 <?php
 /**
  * @package     Joomla.Site
- * @subpackage  mod_mailform
- *
- * @copyright   Copyright © All rights reserved.
- * @license     GNU General Public License version 2 or later;
+ * @subpackage  Modules.Mailform
+ * @copyright   © 2014 develop.powerhost.pw
+ * @license     GNU General Public License version 2 or later
  */
 defined ( '_JEXEC' ) or die ();
 

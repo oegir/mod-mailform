@@ -1,5 +1,8 @@
 /**
- * 
+ * @package     Joomla.Site
+ * @subpackage  Modules.Mailform
+ * @copyright   © 2014 develop.powerhost.pw
+ * @license     GNU General Public License version 2 or later
  */
 
 var ModMailform = {};
@@ -19,19 +22,18 @@ ModMailform.FORM_CAPTCHA_HOLDER = "modMailformCaptchaHolder";
 ModMailform.data = {};
 
 ModMailform.loadAnimation = {
-		cSpeed: 9,
-		cWidth: 220,
-		cHeight: 220,
-		cTotalFrames: 12,
-		cFrameWidth: 220,
-		imageName: "sprites.png",
-		cImageTimeout: false,
-		cIndex: 0,
-		cXpos: 0,
-		cPreloaderTimeout: false,
-		SECONDS_BETWEEN_FRAMES: 0
+	cSpeed : 9,
+	cWidth : 220,
+	cHeight : 220,
+	cTotalFrames : 12,
+	cFrameWidth : 220,
+	imageName : "sprites.png",
+	cImageTimeout : false,
+	cIndex : 0,
+	cXpos : 0,
+	cPreloaderTimeout : false,
+	SECONDS_BETWEEN_FRAMES : 0
 };
-
 
 /**
  * Регистрирует обработчики для событий формы
@@ -46,7 +48,10 @@ ModMailform.loadAnimation = {
  * @returns void
  */
 ModMailform.addEvents = function(moduleId, baseUri, moduleName) {
-	this.data[moduleId] = {"baseUri" : baseUri, "moduleName" : moduleName}
+	this.data[moduleId] = {
+		"baseUri" : baseUri,
+		"moduleName" : moduleName
+	}
 	// Отправка формы на сервер
 	jQuery("#" + ModMailform.FORM_ID + "_" + moduleId).on("submit", function() {
 		ModMailform.sendMessage(moduleId, baseUri, moduleName);
@@ -72,15 +77,18 @@ ModMailform.addEvents = function(moduleId, baseUri, moduleName) {
 			function() {
 				Joomla.removeMessages();
 				ModMailform.hideButtons(moduleId);
-				ModMailform.hideSpinner(moduleId);
-				jQuery("#" + ModMailform.FORM_ID + "_" + moduleId).trigger('reset');
+				ModMailform.hideLoadAnimation(moduleId);
+				jQuery("#" + ModMailform.FORM_ID + "_" + moduleId).trigger(
+						'reset');
 				jQuery("#" + ModMailform.FORM_SPACER_ID + "_" + moduleId)
 						.replaceWith(jQuery("#system-message-container"));
 			});
 	// Настройка индикатора загрузки
-	this.loadAnimation.imageUrl = this.data[moduleId].baseUri + "modules/mod_" + this.data[moduleId].moduleName + "/tmpl/img/" + this.loadAnimation.imageName;
+	this.loadAnimation.imageUrl = this.data[moduleId].baseUri + "modules/mod_"
+			+ this.data[moduleId].moduleName + "/tmpl/img/"
+			+ this.loadAnimation.imageName;
 	var preImg = jQuery("<img/>", {
-		src: ModMailform.loadAnimation.imageUrl
+		src : ModMailform.loadAnimation.imageUrl
 	});
 	// Возврат на экран формы
 	jQuery("#" + this.FORM_REVERT_BUTTON + "_" + moduleId).on("click",
@@ -117,22 +125,28 @@ ModMailform.sendMessage = function(moduleId, baseUri, moduleName) {
 			.ajax({
 				type : "POST",
 				url : baseUri + "index.php?option=com_ajax&module="
-						+ moduleName + "&format=raw&Itemid=" + ModMailform.FRAME_CAPTCHA_MENU_ID,
+						+ moduleName + "&format=raw&Itemid="
+						+ ModMailform.FRAME_CAPTCHA_MENU_ID,
 				data : form_data,
 				dataType : "text",
 				timeout : 30000,
 				async : true,
 
 				error : function(xhr) {
-					ModMailform.hideSpinner(moduleId);
+					ModMailform.hideLoadAnimation(moduleId);
 					ModMailform.showButtons(moduleId);
-					Joomla.renderMessages({ error : { 0 : ModMailform.SERVER_NOT_RESPONDING } });
-					console.log(ModMailform.SERVER_NOT_RESPONDING + ": " + xhr.status + ' ' + xhr.statusText);
+					Joomla.renderMessages({
+						error : {
+							0 : ModMailform.SERVER_NOT_RESPONDING
+						}
+					});
+					console.log(ModMailform.SERVER_NOT_RESPONDING + ": "
+							+ xhr.status + ' ' + xhr.statusText);
 				},
 
 				success : function(msg) {
 					var messages;
-					ModMailform.hideSpinner(moduleId);
+					ModMailform.hideLoadAnimation(moduleId);
 
 					try {
 						var r = jQuery.parseJSON(msg);
@@ -175,7 +189,6 @@ ModMailform.sendMessage = function(moduleId, baseUri, moduleName) {
 			});
 }
 
-
 /**
  * Загружает код captcha и размещает его в окне формы
  * 
@@ -186,7 +199,10 @@ ModMailform.sendMessage = function(moduleId, baseUri, moduleName) {
  */
 ModMailform.loadCaptcha = function(moduleId) {
 	var iFrame = jQuery("<iframe/>", {
-	      src: ModMailform.FORM_BASE_URI + "index.php?option=com_ajax&module=" + ModMailform.FORM_MODULE_NAME + "&format=raw&action=captcha&Itemid=" + ModMailform.FRAME_CAPTCHA_MENU_ID
+		src : ModMailform.FORM_BASE_URI + "index.php?option=com_ajax&module="
+				+ ModMailform.FORM_MODULE_NAME
+				+ "&format=raw&action=captcha&Itemid="
+				+ ModMailform.FRAME_CAPTCHA_MENU_ID
 	});
 	jQuery("#" + this.FORM_CAPTCHA_HOLDER + "_" + moduleId).html(iFrame);
 }
@@ -200,8 +216,11 @@ ModMailform.loadCaptcha = function(moduleId) {
  * @returns void
  */
 ModMailform.importCaptcha = function(moduleId) {
-	var captcha_content = jQuery("#" + this.FORM_CAPTCHA_HOLDER + "_" + moduleId + " iframe").contents().find("#" + this.FRAME_CAPTCHA_BLOCK_ID);
-	jQuery("#" + this.FORM_CAPTCHA_HOLDER + "_" + moduleId).append(captcha_content);
+	var captcha_content = jQuery(
+			"#" + this.FORM_CAPTCHA_HOLDER + "_" + moduleId + " iframe")
+			.contents().find("#" + this.FRAME_CAPTCHA_BLOCK_ID);
+	jQuery("#" + this.FORM_CAPTCHA_HOLDER + "_" + moduleId).append(
+			captcha_content);
 }
 
 /**
@@ -262,35 +281,60 @@ ModMailform.showButtons = function(moduleId) {
 }
 
 /**
- * Отображает прогресс-бар в виде вращаюещегося колеса
+ * Запускает прогресс-бар в виде вращаюещегося колеса
  * 
  * @param moduleId
  *            int - id текущего модуля
- * 
- * @returns Element
+ * @returns void
  */
 ModMailform.showLoadAnimation = function(moduleId) {
 	var animationBlock = jQuery("<div/>").css({
-		"background-image": "url(" + ModMailform.loadAnimation.imageUrl + ")",
-		height: ModMailform.loadAnimation.cHeight,
-		width: ModMailform.loadAnimation.cWidth
+		"background-image" : "url(" + ModMailform.loadAnimation.imageUrl + ")",
+		height : ModMailform.loadAnimation.cHeight,
+		width : ModMailform.loadAnimation.cWidth,
+		display : "inline-block"
 	});
-	var animationHolder = jQuery("#" + ModMailform.FORM_LOAD_ANIMATION + "_" + moduleId);
-	animationHolder.css({display : "inline-block"});
+	var animationHolder = jQuery("#" + ModMailform.FORM_LOAD_ANIMATION + "_"
+			+ moduleId);
+	animationHolder.css({
+		display : "block",
+		"text-align": "center"
+	});
 	animationHolder.append(animationBlock);
-//	
-//	//FPS = Math.round(100/(maxSpeed+2-speed));
-//	FPS = Math.round(100/cSpeed);
-//	SECONDS_BETWEEN_FRAMES = 1 / FPS;
-//	
-//	cPreloaderTimeout=setTimeout('continueAnimation()', SECONDS_BETWEEN_FRAMES/1000);
-//	
-//	var spinner_name = this.FORM_LOAD_ANIMATION + "_" + moduleId;
-//
-//	this.spinners[spinner_name].play();
-//	jQuery("#" + spinner_name).css({
-//		display : 'block'
-//	});
+
+	var FPS = Math.round(100 / this.loadAnimation.cSpeed);
+	this.loadAnimation.SECONDS_BETWEEN_FRAMES = 1 / FPS;
+
+	this.loadAnimation.cPreloaderTimeout = setTimeout(function() {
+		ModMailform.continueLoadAnimation(animationBlock)
+	}, this.loadAnimation.SECONDS_BETWEEN_FRAMES / 1000);
+}
+
+/**
+ * Выполняет покадровую анимацию прогресс-бара в виде вращаюещегося колеса
+ * 
+ * @param moduleId
+ *            int - id текущего модуля
+ * @returns void
+ */
+ModMailform.continueLoadAnimation = function(animationBlock) {
+	this.loadAnimation.cXpos += this.loadAnimation.cFrameWidth;
+	// increase the index so we know which frame of our animation we are
+	// currently on
+	this.loadAnimation.cIndex += 1;
+
+	// if our cIndex is higher than our total number of frames, we're at the end
+	// and should restart
+	if (this.loadAnimation.cIndex >= this.loadAnimation.cTotalFrames) {
+		this.loadAnimation.cXpos = 0;
+		this.loadAnimation.cIndex = 0;
+	}
+
+	animationBlock.css("background-position", (-this.loadAnimation.cXpos) + "px 0");
+
+	this.loadAnimation.cPreloaderTimeout = setTimeout(function() {
+		ModMailform.continueLoadAnimation(animationBlock)
+	}, this.loadAnimation.SECONDS_BETWEEN_FRAMES * 1000);
 }
 
 /**
@@ -301,13 +345,16 @@ ModMailform.showLoadAnimation = function(moduleId) {
  * 
  * @returns Element
  */
-ModMailform.hideSpinner = function(moduleId) {
-	var spinner_name = this.FORM_LOAD_ANIMATION + "_" + moduleId;
-
-	this.spinners[spinner_name].stop();
-	jQuery("#" + spinner_name).css({
-		display : 'none'
+ModMailform.hideLoadAnimation = function(moduleId) {
+	clearTimeout(this.loadAnimation.cPreloaderTimeout);
+	this.loadAnimation.cPreloaderTimeout=false;
+	
+	var animationHolder = jQuery("#" + ModMailform.FORM_LOAD_ANIMATION + "_"
+			+ moduleId);
+	animationHolder.css({
+		display : "block"
 	});
+	animationHolder.empty();
 }
 
 /**
