@@ -1,8 +1,8 @@
 /**
  * @package     Joomla.Site
  * @subpackage  Modules.Mailform
- * @copyright   © 2014 develop.powerhost.pw
- * @license     GNU General Public License version 2 or later
+ * @copyright   © 2014 Alexey Petrov
+ * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
  */
 
 var ModMailform = {};
