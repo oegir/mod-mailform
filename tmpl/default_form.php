@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 <form action="javascript:void(null);" method="post" name="modMailform_<?php echo $module->id ?>" id="modMailform_<?php echo $module->id ?>" class="form-validate form-horizontal">
 	<div id="write_us_div">
 		<fieldset id="write_us_fieldset">
-			<div class="control-group">
+			<div class="control-group row">
 				<div class="control-label">
 					<label id="modMailformLabel_name" for="modMailformField_name" class="">&nbsp;<?php echo $moduleHelper->getFiledLabel('name'); ?>:</label>
 				</div>

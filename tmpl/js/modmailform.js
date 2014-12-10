@@ -247,9 +247,13 @@ ModMailform.hideForm = function(moduleId) {
  */
 ModMailform.showForm = function(moduleId) {
 	this.loadCaptcha(moduleId);
-	jQuery("#" + ModMailform.FORM_ID + "_" + moduleId).css({
-		display : 'block'
-	});
+	// Задание размеров формы на экране
+	jQuery("#" + this.FORM_WINDOW + "_" + moduleId).css({
+        'margin-left': function () {
+            return -(jQuery(this).width() / 2);
+        },
+        display : 'block'
+    });
 }
 
 /**
