@@ -38,20 +38,20 @@ ModMailform.loadAnimation = {
 /**
  * Регистрирует обработчики для событий формы
  * 
- * @param moduleId
- *            int - id текущего модуля
- * @param baseUri
- *            String - URL сайта
- * @param moduleName
- *            String - идентификатор модуля
+ * @param settings
+ *            {@link Object} - Объект с настройками модуля
  * 
  * @returns void
  */
-ModMailform.addEvents = function(moduleId, baseUri, moduleName) {
-	this.data[moduleId] = {
-		"baseUri" : baseUri,
-		"moduleName" : moduleName
+ModMailform.addEvents = function(settings) {
+	this.data[settings.moduleId] = {
+		baseUri : settings.baseUri,
+		moduleName : settings.moduleName,
+		formWidth : settings.formWidth,
+		formHeight : settings.formHeight
 	}
+	var moduleId = settings.moduleId;
+	this.setFormSizes(moduleId);
 	// Отправка формы на сервер
 	jQuery("#" + ModMailform.FORM_ID + "_" + moduleId).on("submit", function() {
 		ModMailform.sendMessage(moduleId, baseUri, moduleName);
@@ -224,6 +224,32 @@ ModMailform.importCaptcha = function(moduleId) {
 }
 
 /**
+ * Настраивает размеры формы отправки сообщения
+ * 
+ * @param moduleId
+ *            int - id текущего модуля
+ * 
+ * @returns void
+ */
+ModMailform.setFormSizes = function(moduleId) {
+	// Ширина
+	if (ModMailform.data[moduleId].formWidth != 0) {
+		jQuery("#" + this.FORM_WINDOW + "_" + moduleId).css({
+			width : ModMailform.data[moduleId].formWidth,
+	        'margin-left': function () {
+	            return -(jQuery(this).width() / 2);
+	        },
+	    });
+	}
+	// Высота
+	if (ModMailform.data[moduleId].formHeight != 0) {
+		jQuery("#" + this.FORM_MODAL_BODY_ID + "_" + moduleId).css({
+			"max-height" : ModMailform.data[moduleId].formHeight
+	    });
+	}
+}
+
+/**
  * Скрывает форму отправки сообщения
  * 
  * @param moduleId
@@ -249,9 +275,6 @@ ModMailform.showForm = function(moduleId) {
 	this.loadCaptcha(moduleId);
 	// Задание размеров формы на экране
 	jQuery("#" + this.FORM_WINDOW + "_" + moduleId).css({
-        'margin-left': function () {
-            return -(jQuery(this).width() / 2);
-        },
         display : 'block'
     });
 }

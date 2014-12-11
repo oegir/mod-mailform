@@ -7,12 +7,13 @@
 	<license>GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html</license>
 	<authorEmail>alexey.webmail@gmail.com</authorEmail>
 	<authorUrl>https://plus.google.com/+DevwebprogBlogspot/</authorUrl>
-	<version>0.7.2</version>
+	<version>0.8.0</version>
 	<description><![CDATA[MOD_MAILFORM_XML_DESCRIPTION]]></description>
 
-  <!-- 	Update servers -->
+	<!-- Update servers -->
 	<updateservers>
-	 <server type="extension" priority="1" name="Horizontal Menu">http://develop.powerhost.pw/images/files/mod_mailform/v.0.7.x/mailform-upgrade.xml</server>
+		<server type="extension" priority="1" name="Horizontal Menu">http://develop.powerhost.pw/images/files/mod_mailform/v.0.7.x/mailform-upgrade.xml
+		</server>
 	</updateservers>
 
 	<files>
@@ -34,8 +35,9 @@
 	<config>
 		<fields name="params">
 			<fieldset name="basic">
-				<field name="sending_mail" type="email" default="" validate="email" required="true"
-					label="MOD_MAILFORM_SENDING_MAIL_LABEL" description="MOD_MAILFORM_SENDING_MAIL_DESC" />
+				<field name="sending_mail" type="email" default="" validate="email"
+					required="true" label="MOD_MAILFORM_SENDING_MAIL_LABEL"
+					description="MOD_MAILFORM_SENDING_MAIL_DESC" />
 				<field name="message" label="MOD_MAILFORM_MESSAGE_TEMPLATE_LABEL"
 					description="MOD_MAILFORM_MESSAGE_TEMPLATE_DESC" type="editor"
 					filter="safehtml" default="%message%" />
@@ -66,17 +68,23 @@
 					<option value="1">JYES</option>
 				</field>
 				<field name="show_copy_box" type="radio" default="0"
-          label="MOD_MAILFORM_SHOW_COPY_BOX_LABEL" description="MOD_MAILFORM_SHOW_COPY_BOX_DESC"
-          class="btn-group btn-group-yesno">
-          <option value="0">JNO</option>
-          <option value="1">JYES</option>
-        </field>
+					label="MOD_MAILFORM_SHOW_COPY_BOX_LABEL" description="MOD_MAILFORM_SHOW_COPY_BOX_DESC"
+					class="btn-group btn-group-yesno">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
 				<field name="show_joomla_send_error" type="radio" default="0"
-          label="MOD_MAILFORM_SHOW_JOOMLA_SEND_ERROR_LABEL" description="MOD_MAILFORM_SHOW_JOOMLA_SEND_ERROR_DESC"
-          class="btn-group btn-group-yesno">
-          <option value="0">JNO</option>
-          <option value="1">JYES</option>
-        </field>
+					label="MOD_MAILFORM_SHOW_JOOMLA_SEND_ERROR_LABEL" description="MOD_MAILFORM_SHOW_JOOMLA_SEND_ERROR_DESC"
+					class="btn-group btn-group-yesno">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+				<field name="form_width" type="text" default="0" size="4"
+					maxlength="4" label="MOD_MAILFORM_FORM_WIDTH_LABEL" description="MOD_MAILFORM_FORM_WIDTH_DESC"
+					filter="integer" />
+				<field name="form_max_height" type="text" default="0" size="4"
+					maxlength="4" label="MOD_MAILFORM_FORM_MAX_HEIGHT_LABEL"
+					description="MOD_MAILFORM_FORM_MAX_HEIGHT_DESC" filter="integer" />
 			</fieldset>
 		</fields>
 	</config>

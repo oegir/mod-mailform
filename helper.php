@@ -325,7 +325,7 @@ class ModMailformHelper {
 		
 		if ($this->form_fields ['email_copy'] ['value']) {
 			// Подготовим данные для отправки пользователю сайта
-			$no_value= 'no value'; // значение, сигнализирующее о том, что поле не было заполнено
+			$no_value = 'no value'; // значение, сигнализирующее о том, что поле не было заполнено
 			$sender_mail = $this->params->get ( 'sender_mail', $no_value );
 			
 			if ($sender_mail == $no_value) {
@@ -545,12 +545,14 @@ class ModMailformHelper {
 	 */
 	public function getSettingsScript() {
 		$javascript = 'jQuery( document ).ready(function () {' . PHP_EOL;
-		$javascript .= '		ModMailform.addEvents(';
-		$javascript .= '"' . $this->module->id . '",';
-		$javascript .= '"' . JFactory::getURI ()->base () . '",';
-		$javascript .= '"' . str_replace ( 'mod_', '', $this->module->module ) . '"';
-		$javascript .= ');' . PHP_EOL; // Конец списка параметров функции 'modMailformAddEvents'
-		$javascript .= '	});' . PHP_EOL; // Конец списка параметров функции 'ready'
+		$javascript .= '	ModMailform.addEvents({' . PHP_EOL;
+		$javascript .= '		moduleId : "' . $this->module->id . '",' . PHP_EOL;
+		$javascript .= '		baseUri : "' . JFactory::getURI ()->base () . '",' . PHP_EOL;
+		$javascript .= '		moduleName: "' . str_replace ( 'mod_', '', $this->module->module ) . '",' . PHP_EOL;
+		$javascript .= '		formWidth : ' . intval ( $this->params->get ( 'form_width', 0 ) ) . ',' . PHP_EOL;
+		$javascript .= '		formHeight : ' . intval ( $this->params->get ( 'form_max_height', 0 ) ) . PHP_EOL;
+		$javascript .= '	});' . PHP_EOL; // Конец списка параметров функции 'modMailformAddEvents'
+		$javascript .= '});' . PHP_EOL; // Конец списка параметров функции 'ready'
 		return $javascript;
 	}
 	
@@ -573,7 +575,7 @@ class ModMailformHelper {
 		$javascript .= 'ModMailform.FORM_MODULE_NAME = "' . $this->module->name . '";' . PHP_EOL;
 		$javascript .= 'ModMailform.FORM_BASE_URI = "' . JURI::base () . '";' . PHP_EOL;
 		$javascript .= 'ModMailform.FRAME_CAPTCHA_BLOCK_ID = "' . self::CAPTCHA_BLOCK_ID . '";' . PHP_EOL;
-		$javascript .= 'ModMailform.FRAME_CAPTCHA_MENU_ID = "' . $this->application->getMenu()->getActive()->id . '";';
+		$javascript .= 'ModMailform.FRAME_CAPTCHA_MENU_ID = "' . $this->application->getMenu ()->getActive ()->id . '";';
 		return $javascript;
 	}
 	
