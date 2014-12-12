@@ -12,7 +12,7 @@
 
 	<!-- Update servers -->
 	<updateservers>
-		<server type="extension" priority="1" name="Horizontal Menu">http://develop.powerhost.pw/images/files/mod_mailform/v.0.7.x/mailform-upgrade.xml
+		<server type="extension" priority="1" name="Horizontal Menu">http://develop.powerhost.pw/images/files/mod_mailform/v.0.8.x/mailform-upgrade.xml
 		</server>
 	</updateservers>
 
@@ -41,6 +41,28 @@
 				<field name="message" label="MOD_MAILFORM_MESSAGE_TEMPLATE_LABEL"
 					description="MOD_MAILFORM_MESSAGE_TEMPLATE_DESC" type="editor"
 					filter="safehtml" default="%message%" />
+				<field name="message" label="MOD_MAILFORM_MESSAGE_TEMPLATE_LABEL"
+					description="MOD_MAILFORM_MESSAGE_TEMPLATE_DESC" type="editor"
+					filter="safehtml" default="MOD_MAILFORM_MESSAGE_TEMPLATE" />
+				<field type="spacer" name="ads"
+					label="
+          &lt;script type=&#34;text/javascript&#34;&gt;
+          jQuery(document).ready(function () {
+            var lng = navigator.browserLanguage || navigator.language || navigator.userLanguage;
+            
+            if(lng.indexOf(&#34;ru&#34;) + 1) {
+              jQuery(&#34;#adv-context&#34;).attr(&#34;src&#34;, &#34;http://develop.powerhost.pw/banners-ru&#34;);
+            } else {
+              jQuery(&#34;#adv-context&#34;).attr(&#34;src&#34;, &#34;http://develop.powerhost.pw/en/banners-en&#34;);
+            }
+          });
+          &lt;/script&gt;
+          &lt;iframe
+          id=&#34;adv-context&#34;
+          src=&#34;&#34;
+          style=&#34;border:none;width:100%;height:auto;&#34;
+          &gt;&lt;/iframe&gt;
+          " />
 			</fieldset>
 			<fieldset name="options">
 				<field name="sender_mail" type="email" default="" validate="email"
