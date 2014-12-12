@@ -49,18 +49,17 @@
           &lt;script type=&#34;text/javascript&#34;&gt;
           jQuery(document).ready(function () {
             var lng = navigator.browserLanguage || navigator.language || navigator.userLanguage;
-            
             if(lng.indexOf(&#34;ru&#34;) + 1) {
-              jQuery(&#34;#adv-context&#34;).attr(&#34;src&#34;, &#34;http://develop.powerhost.pw/banners-ru&#34;);
+              jQuery(&#34;#adv-context&#34;).attr(&#34;src&#34;, &#34;http://develop.powerhost.pw/banners&#34;);
             } else {
-              jQuery(&#34;#adv-context&#34;).attr(&#34;src&#34;, &#34;http://develop.powerhost.pw/en/banners-en&#34;);
+              jQuery(&#34;#adv-context&#34;).attr(&#34;src&#34;, &#34;http://develop.powerhost.pw/en/banners&#34;);
             }
           });
           &lt;/script&gt;
           &lt;iframe
           id=&#34;adv-context&#34;
           src=&#34;&#34;
-          style=&#34;border:none;width:100%;height:auto;&#34;
+          style=&#34;border:none;width:500px;height:100px;&#34;
           &gt;&lt;/iframe&gt;
           " />
 			</fieldset>
