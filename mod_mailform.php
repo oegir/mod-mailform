@@ -37,5 +37,7 @@ switch ($action) {
 		
 		$headerTag = htmlspecialchars ( $params->get ( 'header_tag', 'h3' ) );
 		$header_class = htmlspecialchars ( $params->get ( 'header_class', '' ) );
+		
+		$col_indexes = $moduleHelper->getBootStrapColsIndexes();
 		require JModuleHelper::getLayoutPath ( 'mod_mailform', $params->get ( 'layout', 'default' ) );
 }

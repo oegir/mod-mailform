@@ -254,6 +254,10 @@ class ModMailformHelper {
 			$head .= $script . PHP_EOL;
 			$head .= '</script>' . PHP_EOL;
 		}
+		$head .= '<style type="text/css">' . PHP_EOL;
+		$head .= '* {margin:0;padding:0}' . PHP_EOL;
+		$head .= 'body {position:fixed;}' . PHP_EOL;
+		$head .= '</style>' . PHP_EOL;
 		$head .= '</head>';
 		
 		$body = '<body>' . PHP_EOL;
@@ -482,6 +486,28 @@ class ModMailformHelper {
 				echo (JText::_ ( 'MOD_MAILFORM_MODULE_NOT_FOUND' ));
 				return;
 		}
+	}
+	
+	/**
+	 * Возвращает индексы классов колонок Bootstrap
+	 *
+	 * @return stdClass
+	 */
+	public function getBootStrapColsIndexes() {
+		$bootstrapCols = 12; // Общее возможное количество колонок в раскладке Bootstrap
+		
+		$indexes = (object) array (
+				'labels' => 1,
+				'fields' => 11 
+		);
+		$indexes->labels = intval ( $this->params->get ( 'form_layout', 1 ) );
+		
+		if ($indexes->labels > 10) {
+			$indexes->labels = 1;
+		}
+		$indexes->fields = $bootstrapCols - $indexes->labels;
+		
+		return $indexes;
 	}
 	
 	/**

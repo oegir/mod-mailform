@@ -18,3 +18,12 @@
 	width: 450px;
 	height: 120px;
 }
+.modMailform-inputFluid {
+	width: 100%;
+}
+.modMailform-writeUs .controls {
+	padding-right: 15px;
+}
+.modMailform-right {
+	text-align: right;
+}

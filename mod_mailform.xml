@@ -85,6 +85,9 @@
 				<field name="form_max_height" type="text" default="0" size="4"
 					maxlength="4" label="MOD_MAILFORM_FORM_MAX_HEIGHT_LABEL"
 					description="MOD_MAILFORM_FORM_MAX_HEIGHT_DESC" filter="integer" />
+				<field name="form_layout" type="integer" default="2"
+					label="MOD_MAILFORM_FORM_LAYOUT_LABEL" description="MOD_MAILFORM_FORM_LAYOUT_DESC"
+					first="1" last="10" step="1" />
 			</fieldset>
 		</fields>
 	</config>
