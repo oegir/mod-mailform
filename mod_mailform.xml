@@ -2,12 +2,12 @@
 <extension type="module" version="3.3" client="site" method="upgrade">
 	<name>MOD_MAILFORM</name>
 	<author>Alexey Petrov</author>
-	<creationDate>04.12.2014</creationDate>
+	<creationDate>18.12.2014</creationDate>
 	<copyright>Copyright © 2014 Alexey Petrov</copyright>
 	<license>GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html</license>
 	<authorEmail>alexey.webmail@gmail.com</authorEmail>
 	<authorUrl>https://plus.google.com/+DevwebprogBlogspot/</authorUrl>
-	<version>0.8.0</version>
+	<version>0.8.1</version>
 	<description><![CDATA[MOD_MAILFORM_XML_DESCRIPTION]]></description>
 
 	<!-- Update servers -->
