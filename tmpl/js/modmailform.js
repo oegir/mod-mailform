@@ -54,7 +54,7 @@ ModMailform.addEvents = function(settings) {
 	this.setFormSizes(moduleId);
 	// Отправка формы на сервер
 	jQuery("#" + ModMailform.FORM_ID + "_" + moduleId).on("submit", function() {
-		ModMailform.sendMessage(moduleId);
+		ModMailform.sendMessage(moduleId, baseUri, moduleName);
 	});
 	// Открытие окна отправки собщений
 	jQuery("#" + this.FORM_OPEN_BUTTON_ID + "_" + moduleId).on(
@@ -105,10 +105,14 @@ ModMailform.addEvents = function(settings) {
  * 
  * @param moduleId
  *            int - id текущего модуля
+ * @param baseUri
+ *            String - URL сайта
+ * @param moduleName
+ *            String - идентификатор модуля
  * 
  * @returns void
  */
-ModMailform.sendMessage = function(moduleId) {
+ModMailform.sendMessage = function(moduleId, baseUri, moduleName) {
 	Joomla.removeMessages();
 	ModMailform.hideForm(moduleId);
 	ModMailform.importCaptcha(moduleId);
@@ -120,8 +124,8 @@ ModMailform.sendMessage = function(moduleId) {
 	jQuery
 			.ajax({
 				type : "POST",
-				url : ModMailform.data[moduleId].baseUri + "index.php?option=com_ajax&module="
-						+ ModMailform.data[moduleId].moduleName + "&format=raw&Itemid="
+				url : baseUri + "index.php?option=com_ajax&module="
+						+ moduleName + "&format=raw&Itemid="
 						+ ModMailform.FRAME_CAPTCHA_MENU_ID,
 				data : form_data,
 				dataType : "text",
@@ -268,12 +272,9 @@ ModMailform.hideForm = function(moduleId) {
  * @returns void
  */
 ModMailform.showForm = function(moduleId) {
-	
-	if (jQuery("#" + this.FORM_CAPTCHA_HOLDER + "_" + moduleId).length != 0) {
-		this.loadCaptcha(moduleId);
-	}
+	this.loadCaptcha(moduleId);
 	// Задание размеров формы на экране
-	jQuery("#" + this.FORM_ID + "_" + moduleId).css({
+	jQuery("#" + this.FORM_WINDOW + "_" + moduleId).css({
         display : 'block'
     });
 }
